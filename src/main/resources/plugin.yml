@@ -1,0 +1,5 @@
+name: Plouf
+version: '${project.version}'
+main: fr.lumin0u.plouf.Plouf
+api-version: 1.17
+authors: [ lumin0u ]
