@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import static fr.lumin0u.plouf.Plouf.PICKAXE_SLOT;
+import static fr.lumin0u.plouf.Plouf.PLOUF_WOOD_DEACTIVATED;
 import static java.util.function.Predicate.not;
 
 public class GameManager
@@ -35,13 +36,13 @@ public class GameManager
 	private Map<UUID, PloufPlayer> players = new HashMap<>();
 	private boolean started;
 	private int time;
-	private Random random;
+	private final Random itemRandom;
 	
 	final int gameDuration = 2 * 60 * 20;
 	
 	public GameManager(Plouf main) {
 		this.main = main;
-		random = new Random();
+		itemRandom = new Random();
 	}
 	
 	public PloufPlayer getPlayer(UUID uid) {
@@ -112,8 +113,8 @@ public class GameManager
 				if(itemDelay * ++i > gameDuration - 200)
 					cancel();
 				
-				Material material = Items.getRandomGiveableItem(random);
-				ItemStack item = new ItemStack(material, 1 + random.nextInt(Math.min(16, material.getMaxStackSize())));
+				Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
+				ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
 				getNonSpecPlayers().forEach(player -> player.toBukkit().getInventory().addItem(item));
 			}
 		}.runTaskTimer(main, 0, itemDelay);

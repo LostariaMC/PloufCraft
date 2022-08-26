@@ -26,6 +26,7 @@ import java.util.UUID;
 public final class Plouf extends JavaPlugin
 {
 	public static final String PLOUF_ITEM_DELAY = "plouf_item_delay";
+	public static final String PLOUF_WOOD_DEACTIVATED = "plouf_wood_deactivated";
 	
 	public static final String PLOUF_ITEMS_CRAFTED = "plouf_items_crafted";
 	public static final String PLOUF_UNIQUE_ITEMS_CRAFTED = "plouf_unique_items_crafted";
@@ -92,6 +93,10 @@ public final class Plouf extends JavaPlugin
 		game.addParameter(new Parameter(PLOUF_ITEM_DELAY, "", 5, 0.25f, 20,
 				new ItemBuilder(Material.CLOCK).setDisplayName("§bDélai entre 2 items").addLore(List.of(" ", "§7Définir le délai entre", " ", "§e Valeur actuelle : §6%f §esecondes")).build(),
 				List.of(1f, 0.5f, 0.25f), false, false));
+		
+		game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
+						new ItemBuilder(Material.OAK_LOG).setDisplayName("§bDésactivation du bois").addLore(List.of(" ", "§7Permet de désactiver le", "§7drop de bois (n'exclut que", "§7les planches et les buches, les", "§7crafts utilisant du bois sont", "§7toujours possible)", " ", "§e Actuellement : §6%b")).build(),
+						false, false));
 		
 		API.instance().registerNewGame(game);
 		
