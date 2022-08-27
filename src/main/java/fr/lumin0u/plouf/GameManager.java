@@ -115,7 +115,13 @@ public class GameManager
 				
 				Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
 				ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
-				getNonSpecPlayers().forEach(player -> player.toBukkit().getInventory().addItem(item));
+				getNonSpecPlayers().forEach(player ->
+				{
+					if(player.toBukkit().getInventory().firstEmpty() != -1)
+						player.toBukkit().getInventory().addItem(item);
+					else
+						player.toBukkit().getWorld().dropItem(player.toBukkit().getLocation(), item);
+				});
 			}
 		}.runTaskTimer(main, 0, itemDelay);
 		
