@@ -95,7 +95,7 @@ public final class Plouf extends JavaPlugin
 				List.of(1f, 0.5f, 0.25f), false, false));
 		
 		game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
-						new ItemBuilder(Material.OAK_LOG).setDisplayName("§bDésactivation du bois").addLore(List.of(" ", "§7Permet de désactiver le", "§7drop de bois (n'exclut que", "§7les planches et les buches, les", "§7crafts utilisant du bois sont", "§7toujours possible)", " ", "§e Actuellement : §6%b")).build(),
+						new ItemBuilder(Material.OAK_LOG).setDisplayName("§bDésactivation du bois").addLore(List.of(" ", "§7Permet de désactiver le", "§7drop de bois (n'exclut que", "§7les planches et les buches, les", "§7crafts utilisant du bois sont", "§7toujours possible)", " ", "§e Actuellement : le bois n'est pas §6%b")).build(),
 						false, false));
 		
 		API.instance().registerNewGame(game);
