@@ -1,5 +1,6 @@
 package fr.lumin0u.plouf;
 
+import com.google.common.reflect.TypeToken;
 import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.NMSUtils;
 import fr.worsewarn.cosmox.API;
@@ -13,7 +14,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
+import net.minecraft.core.Holder;
+import net.minecraft.server.commands.CommandClone;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.ChunkSection;
+import net.minecraft.world.level.chunk.DataPaletteBlock;
 import org.bukkit.*;
 import org.bukkit.Note.Tone;
 import org.bukkit.entity.Player;
@@ -22,6 +28,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -57,7 +65,7 @@ public class GameManager
 		ChunkSection[] sections1 = NMSUtils.Chunk_getChunkSections(nmsChunk1);
 		ChunkSection[] sections2 = NMSUtils.Chunk_getChunkSections(nmsChunk2);
 		
-		System.arraycopy(sections1, 0, sections2, 0, sections1.length);
+		System.arraycopy(Arrays.stream(sections1).map(cs -> cs).toArray(ChunkSection[]::new), 0, sections2, 0, sections1.length);
 	}
 	
 	public List<PloufPlayer> getNonSpecPlayers() {
