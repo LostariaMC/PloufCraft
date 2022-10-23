@@ -35,7 +35,7 @@ public class Items
 					return false;
 				}).collect(ImmutableList.toImmutableList());
 		
-		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG)")).collect(ImmutableList.toImmutableList());
+		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableList.toImmutableList());
 	}
 	
 	public static List<Material> getGiveableItems() {
