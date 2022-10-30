@@ -16,6 +16,7 @@ import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
 import net.minecraft.core.Holder;
 import net.minecraft.server.commands.CommandClone;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.ChunkSection;
@@ -210,20 +211,23 @@ public class GameManager
 	
 	public void updateScoreboardScores(boolean sorted, int maxUnique)
 	{
-		List<String> lines = new ArrayList<>();
+		List<Tuple<PloufPlayer, String>> lines = new ArrayList<>();
 		
 		List<PloufPlayer> players = getNonSpecPlayers();
 		
 		Comparator<PloufPlayer> comparator = (p1, p2) -> Integer.compare(p2.getPoints(maxUnique), p1.getPoints(maxUnique));
 		
-		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add("§7" + player.getName() + ": §f" + player.getPoints(maxUnique)));
+		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add(new Tuple<>(player, "§7" + player.getName() + ": §f" + player.getPoints(maxUnique))));
 		
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
 			for(int i = 0; i < lines.size(); i++)
 			{
-				if(watcher.toCosmox().getScoreboard().size() <= i + 3 || !watcher.toCosmox().getScoreboard().getLine(i + 3).equals(lines.get(i)))
-					watcher.toCosmox().getScoreboard().updateLine(i + 3, lines.get(i));
+				if(watcher.toCosmox().getScoreboard().size() <= i + 3 || !watcher.toCosmox().getScoreboard().getLine(i + 3).equals(lines.get(i).b()))
+					if(i + 3 < 17)
+						watcher.toCosmox().getScoreboard().updateLine(i + 3, lines.get(i).b());
+					else if(lines.get(i).a().equals(watcher))
+						watcher.toCosmox().getScoreboard().updateLine(18, lines.get(i).b());
 			}
 		}
 	}
@@ -238,12 +242,13 @@ public class GameManager
 			scoreboard.updateLine(0, "§0");
 			scoreboard.updateLine(1, "§7§l???");
 			scoreboard.updateLine(2, "§1");
+			
 			for(int i = 0; i < getNonSpecPlayers().size(); i++)
 			{
-				scoreboard.updateLine(i + 3, "§7§l???");
+				scoreboard.updateLine(Math.min(18, i + 3), "§7§l???");
 			}
-			scoreboard.updateLine(getNonSpecPlayers().size() + 3, "§2");
-			scoreboard.updateLine(getNonSpecPlayers().size() + 4, "§3");
+			scoreboard.updateLine(Math.min(19, getNonSpecPlayers().size() + 3), "§2");
+			scoreboard.updateLine(Math.min(20, getNonSpecPlayers().size() + 4), "§3");
 			
 			watcher.toCosmox().setScoreboard(scoreboard);
 		}
