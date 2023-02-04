@@ -161,7 +161,7 @@ public class GameManager
 					if(time % 20 == 0)
 						updateScoreboardTime();
 					
-					if(time <= gameDuration - 20 * 10 && time%20 == 0)
+					if(time >= gameDuration - 20 * 10 && time%20 == 0)
 					{
 						for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 						{
