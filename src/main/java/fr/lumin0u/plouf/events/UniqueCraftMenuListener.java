@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class UniqueCraftMenuListener implements Listener
 {
@@ -21,7 +22,20 @@ public class UniqueCraftMenuListener implements Listener
 	
 	private void createMenu()
 	{
-		menu = Bukkit.createInventory(null, 6*9, "Crafts uniques des autres joueurs");
+		menu = Bukkit.createInventory(null, 6*9, "Crafts uniques des joueurs");
+		
+		new BukkitRunnable() {
+			int t = 0;
+			
+			@Override
+			public void run() {
+				updateMenu(t++);
+			}
+		}.runTaskTimer(Plouf.getInstance(), 0, 10);
+	}
+	
+	private void updateMenu(int t)
+	{
 		GameManager gm = Plouf.getInstance().getGameManager();
 		
 		int i = 0;
@@ -32,18 +46,14 @@ public class UniqueCraftMenuListener implements Listener
 			
 			menu.setItem(i, new ItemBuilder(Material.PLAYER_HEAD)
 					.setHead(player.getName())
-					.setDisplayName(player.getName()).setLore("§7Tout les items listés ci-dessous", "§7n'ont été craftés que par " + player.getName())
+					.setDisplayName(player.getName()).setLore("§7Tous les items listés ci-dessous", "§7n'ont été craftés que par " + player.getName())
 					.build());
 			
-			int j = 1;
-			
-			for(Material craft : player.getUniqueCrafts())
+			for(int j = 0; j < Math.min(5, player.getUniqueCrafts().size()); j++)
 			{
-				if(j == 6)
-					break;
+				Material craft = player.getUniqueCrafts().get((j + t) % player.getUniqueCrafts().size());
 				
-				menu.setItem(i + 9*j, new ItemStack(craft));
-				j++;
+				menu.setItem(i + 9*(j + 1), new ItemStack(craft));
 			}
 			
 			i++;
