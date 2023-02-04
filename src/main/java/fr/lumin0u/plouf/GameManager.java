@@ -171,7 +171,7 @@ public class GameManager
 								watcher.toBukkit().playSound(watcher.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_2, 1, 2);
 							}
 							watcher.toBukkit().showTitle(Title.title(Component.text("§e" + ((gameDuration - time)/20) + " secondes"), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
-							watcher.toBukkit().playNote(watcher.toBukkit().getLocation(), Instrument.BASS_GUITAR, Note.natural(1, Tone.values()[(gameDuration - time)/20]));
+							watcher.toBukkit().playNote(watcher.toBukkit().getLocation(), Instrument.BASS_GUITAR, Note.natural(1, Tone.values()[((gameDuration - time)/20) % 7]));
 						}
 					}
 				}
