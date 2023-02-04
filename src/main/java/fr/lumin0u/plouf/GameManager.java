@@ -1,6 +1,5 @@
 package fr.lumin0u.plouf;
 
-import com.google.common.reflect.TypeToken;
 import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.NMSUtils;
 import fr.worsewarn.cosmox.API;
@@ -14,13 +13,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
-import net.minecraft.core.Holder;
-import net.minecraft.server.commands.CommandClone;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.level.biome.BiomeBase;
-import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.chunk.ChunkSection;
-import net.minecraft.world.level.chunk.DataPaletteBlock;
 import org.bukkit.*;
 import org.bukkit.Note.Tone;
 import org.bukkit.entity.Player;
@@ -29,8 +23,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -41,7 +33,7 @@ import static java.util.function.Predicate.not;
 
 public class GameManager
 {
-	private final Plouf main;
+	private final Plouf plouf;
 	private Map<UUID, PloufPlayer> players = new HashMap<>();
 	private boolean started;
 	private int time;
@@ -50,7 +42,7 @@ public class GameManager
 	final int gameDuration = 2 * 60 * 20;
 	
 	public GameManager(Plouf main) {
-		this.main = main;
+		this.plouf = main;
 		itemRandom = new Random();
 	}
 	
@@ -102,7 +94,7 @@ public class GameManager
 			public void run() {
 				start();
 			}
-		}.runTaskLater(main, 200);
+		}.runTaskLater(plouf, 200);
 	}
 	
 	public void start() {
@@ -132,7 +124,7 @@ public class GameManager
 						player.toBukkit().getWorld().dropItem(player.toBukkit().getLocation(), item);
 				});
 			}
-		}.runTaskTimer(main, 0, itemDelay);
+		}.runTaskTimer(plouf, 0, itemDelay);
 		
 		/*new BukkitRunnable()
 		{
@@ -161,7 +153,7 @@ public class GameManager
 				
 				if(time == gameDuration)
 				{
-					stop();
+					endGame();
 					cancel();
 				}
 				else
@@ -169,31 +161,24 @@ public class GameManager
 					if(time % 20 == 0)
 						updateScoreboardTime();
 					
-					if(time == gameDuration - 20 * 10)
+					if(time <= gameDuration - 20 * 10 && time%20 == 0)
 					{
 						for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 						{
-							watcher.toBukkit().showTitle(Title.title(Component.text("§e10"), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
-							watcher.toBukkit().playSound(watcher.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_3, 1, 2);
-							watcher.toBukkit().playNote(watcher.toBukkit().getLocation(), Instrument.BASS_GUITAR, Note.natural(1, Tone.A));
-						}
-					}
-					
-					for(int i = 1; i <= 5; i++)
-					{
-						if(time == gameDuration - 20 * i)
-						{
-							for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
+							if(time == gameDuration - 20 * 10)
 							{
-								watcher.toBukkit().showTitle(Title.title(Component.text("§" + i + i), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
+								watcher.toBukkit().sendMessage(Plouf.getGame().getPrefix() + "§eIl reste 10 secondes !");
+								watcher.toBukkit().playSound(watcher.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_2, 1, 2);
 							}
+							watcher.toBukkit().showTitle(Title.title(Component.text("§e" + ((gameDuration - time)/20) + " secondes"), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
+							watcher.toBukkit().playNote(watcher.toBukkit().getLocation(), Instrument.BASS_GUITAR, Note.natural(1, Tone.values()[(gameDuration - time)/20]));
 						}
 					}
 				}
 				
 				time++;
 			}
-		}.runTaskTimer(main, 1, 1);
+		}.runTaskTimer(plouf, 1, 1);
 	}
 	
 	public void updateScoreboardTime() {
@@ -257,7 +242,7 @@ public class GameManager
 		updateScoreboardScores();
 	}
 	
-	public void stop() {
+	public void endGame() {
 		started = false;
 		
 		updateScoreboardTime();
@@ -268,6 +253,7 @@ public class GameManager
 			player.toBukkit().setGameMode(GameMode.ADVENTURE);
 			player.toBukkit().setAllowFlight(true);
 			player.toBukkit().getInventory().clear();
+			player.toBukkit().setItemOnCursor(null);
 			
 			player.calculateUniqueCrafts(getNonSpecPlayers());
 			
@@ -296,6 +282,7 @@ public class GameManager
 					updateScoreboardScores(true, i);
 					
 					IntStream.range(0, 9).forEach(j -> player.toBukkit().getInventory().setItem(j, new ItemStack(player.getUniqueCrafts().get(i))));
+					player.toBukkit().getInventory().setItem(i+9, new ItemStack(player.getUniqueCrafts().get(i)));
 					player.toBukkit().updateInventory();
 					player.toBukkit().getWorld().spawnParticle(Particle.TOTEM, player.toBukkit().getLocation(), 30);
 					
@@ -314,9 +301,9 @@ public class GameManager
 						
 						player.toCosmox().addStatistic(GameVariables.WIN, 1);
 						
-						main.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
+						plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
 					});
-					main.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
+					plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
 					getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));
 					
 					getNonSpecPlayers().forEach(player -> {
@@ -327,6 +314,9 @@ public class GameManager
 						player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());
 						player.toCosmox().addStatistic(Plouf.PLOUF_UNIQUE_ITEMS_CRAFTED, player.getUniqueCrafts().size());
 						player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
+						
+						IntStream.range(0, 9).forEach(j -> player.toBukkit().getInventory().setItem(j, null));
+						player.toBukkit().getInventory().setItem(8, Items.UNIQUE_CRAFTS_HEAD);
 					});
 					
 					updateScoreboardScores(true, -1);
@@ -337,7 +327,7 @@ public class GameManager
 				
 				i++;
 			}
-		}.runTaskTimer(main, 60, 17);
+		}.runTaskTimer(plouf, 60, 17);
 	}
 	
 	public boolean isStarted() {

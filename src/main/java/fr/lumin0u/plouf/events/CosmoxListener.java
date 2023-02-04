@@ -22,6 +22,7 @@ public class CosmoxListener implements Listener
 			Plouf.getInstance().getGameManager().onCosmoxStart(event.getMap());
 			
 			Plouf.getInstance().getServer().getPluginManager().registerEvents(new CraftListener(), Plouf.getInstance());
+			Plouf.getInstance().getServer().getPluginManager().registerEvents(new UniqueCraftMenuListener(), Plouf.getInstance());
 		}
 	}
 	

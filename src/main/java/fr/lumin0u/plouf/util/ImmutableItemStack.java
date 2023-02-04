@@ -31,7 +31,6 @@ public class ImmutableItemStack extends ItemStack
 		super(type, amount, damage, data);
 	}
 	
-	@Contract(" -> fail")
 	public void throwImmutable() throws IllegalStateException {
 		throw new IllegalStateException("This itemstack is immutable");
 	}

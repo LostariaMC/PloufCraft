@@ -1,6 +1,7 @@
 package fr.lumin0u.plouf.util;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,8 +14,10 @@ import java.util.*;
 
 public class Items
 {
-	private static ImmutableList<Material> giveableItems;
-	private static ImmutableList<Material> noWoodGiveableItems;
+	private static ImmutableSet<Material> giveableItems;
+	private static ImmutableSet<Material> noWoodGiveableItems;
+	
+	public static final ItemStack UNIQUE_CRAFTS_HEAD = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§eCrafts uniques des joueurs").setLore(" §e§l> §fClique §7pour voir les crafts uniques", "§7des autres joueurs").buildImmutable();
 	
 	public static void buildGiveableItems() {
 		
@@ -33,24 +36,24 @@ public class Items
 						}
 					}
 					return false;
-				}).collect(ImmutableList.toImmutableList());
+				}).collect(ImmutableSet.toImmutableSet());
 		
-		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableList.toImmutableList());
+		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableSet.toImmutableSet());
 	}
 	
-	public static List<Material> getGiveableItems() {
+	public static Set<Material> getGiveableItems() {
 		return giveableItems;
 	}
 	
-	public static List<Material> getNoWoodGiveableItems() {
+	public static Set<Material> getNoWoodGiveableItems() {
 		return noWoodGiveableItems;
 	}
 	
 	public static Material getRandomGiveableItem(Random random) {
-		return giveableItems.get(random.nextInt(giveableItems.size()));
+		return giveableItems.stream().skip(random.nextInt(giveableItems.size())).findFirst().orElse(null);
 	}
 	public static Material getRandomNoWoodGiveableItem(Random random) {
-		return noWoodGiveableItems.get(random.nextInt(noWoodGiveableItems.size()));
+		return noWoodGiveableItems.stream().skip(random.nextInt(noWoodGiveableItems.size())).findFirst().orElse(null);
 	}
 	
 	public static final ItemStack DEFAULT_PICKAXE = new ItemBuilder(Material.IRON_PICKAXE).setUnbreakable(true).buildImmutable();
