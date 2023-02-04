@@ -49,9 +49,10 @@ public class UniqueCraftMenuListener implements Listener
 					.setDisplayName(player.getName()).setLore("§7Tous les items listés ci-dessous", "§7n'ont été craftés que par " + player.getName())
 					.build());
 			
-			for(int j = 0; j < Math.min(5, player.getUniqueCrafts().size()); j++)
+			int count = player.getUniqueCrafts().size();
+			for(int j = 0; j < Math.min(5, count); j++)
 			{
-				Material craft = player.getUniqueCrafts().get((j + t) % player.getUniqueCrafts().size());
+				Material craft = player.getUniqueCrafts().get((count > 5 ? j + t : j) % count);
 				
 				menu.setItem(i + 9*(j + 1), new ItemStack(craft));
 			}
