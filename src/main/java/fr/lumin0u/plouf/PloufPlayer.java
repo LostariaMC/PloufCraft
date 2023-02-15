@@ -1,7 +1,7 @@
 package fr.lumin0u.plouf;
 
-import fr.worsewarn.cosmox.game.Team;
-import fr.worsewarn.cosmox.game.WrappedPlayer;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
+import fr.worsewarn.cosmox.game.teams.Team;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 

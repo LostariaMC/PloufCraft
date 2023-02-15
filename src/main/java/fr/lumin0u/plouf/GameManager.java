@@ -3,12 +3,12 @@ package fr.lumin0u.plouf;
 import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.NMSUtils;
 import fr.worsewarn.cosmox.API;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.scoreboard.CosmoxScoreboard;
 import fr.worsewarn.cosmox.game.GameVariables;
 import fr.worsewarn.cosmox.game.Phase;
-import fr.worsewarn.cosmox.game.WrappedPlayer;
 import fr.worsewarn.cosmox.tools.chat.Messages;
-import fr.worsewarn.cosmox.tools.locations.GameMap;
+import fr.worsewarn.cosmox.tools.map.GameMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
@@ -18,7 +18,6 @@ import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.*;
 import org.bukkit.Note.Tone;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -84,9 +83,7 @@ public class GameManager
 			i++;
 			
 			ploufPlayer.toBukkit().getInventory().clear();
-			int pickaxeSlot = ploufPlayer.toCosmox().getSlotForCustomItem(PICKAXE_SLOT);
-			if(pickaxeSlot != -1) ploufPlayer.toBukkit().getInventory().setItem(pickaxeSlot, PICKAXE_SLOT.getItem());
-			else ploufPlayer.toBukkit().getInventory().setItem(EquipmentSlot.OFF_HAND, PICKAXE_SLOT.getItem());
+			ploufPlayer.toBukkit().getInventory().setItem(ploufPlayer.toCosmox().getDefaultItemManager().getSlotForCustomItem(PICKAXE_SLOT), PICKAXE_SLOT.getItem());
 			ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1234567890, 50, false, false));
 			ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
 		}

@@ -7,13 +7,15 @@ import fr.lumin0u.plouf.events.CraftListener;
 import fr.lumin0u.plouf.util.ItemBuilder;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
+import fr.worsewarn.cosmox.api.statistics.Statistic;
 import fr.worsewarn.cosmox.game.*;
-import fr.worsewarn.cosmox.game.WrappedPlayer.PlayerWrapper;
-import fr.worsewarn.cosmox.game.ievents.utilities.MapType;
+import fr.worsewarn.cosmox.game.configuration.Parameter;
 import fr.worsewarn.cosmox.tools.items.DefaultItemSlot;
-import fr.worsewarn.cosmox.tools.locations.MapLocation;
-import fr.worsewarn.cosmox.tools.locations.MapLocationType;
-import fr.worsewarn.cosmox.tools.locations.MapTemplate;
+import fr.worsewarn.cosmox.tools.map.MapLocation;
+import fr.worsewarn.cosmox.tools.map.MapLocationType;
+import fr.worsewarn.cosmox.tools.map.MapTemplate;
+import fr.worsewarn.cosmox.tools.map.MapType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,7 +59,7 @@ public final class Plouf extends JavaPlugin
 		
 		api = API.instance();
 		
-		WrappedPlayer.registerType(new PlayerWrapper<PloufPlayer>(PloufPlayer.class)
+		WrappedPlayer.registerType(new WrappedPlayer.PlayerWrapper<PloufPlayer>(PloufPlayer.class)
 		{
 			@Override
 			public PloufPlayer unWrap(java.util.UUID uuid) {

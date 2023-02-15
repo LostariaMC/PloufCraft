@@ -1,8 +1,8 @@
 package fr.lumin0u.plouf.events;
 
 import fr.lumin0u.plouf.Plouf;
-import fr.worsewarn.cosmox.game.ievents.GameStartEvent;
-import fr.worsewarn.cosmox.game.ievents.GameStopEvent;
+import fr.worsewarn.cosmox.game.events.GameStartEvent;
+import fr.worsewarn.cosmox.game.events.GameStopEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
