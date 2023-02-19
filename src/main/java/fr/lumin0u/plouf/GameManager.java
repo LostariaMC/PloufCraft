@@ -83,7 +83,6 @@ public class GameManager
 			i++;
 			
 			ploufPlayer.toBukkit().getInventory().clear();
-			ploufPlayer.toBukkit().getInventory().setItem(ploufPlayer.toCosmox().getDefaultItemManager().getSlotForCustomItem(PICKAXE_SLOT), PICKAXE_SLOT.getItem());
 			ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1234567890, 50, false, false));
 			ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
 		}
