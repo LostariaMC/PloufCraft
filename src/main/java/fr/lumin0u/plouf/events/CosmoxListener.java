@@ -1,6 +1,7 @@
 package fr.lumin0u.plouf.events;
 
 import fr.lumin0u.plouf.Plouf;
+import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.game.events.GameStartEvent;
 import fr.worsewarn.cosmox.game.events.GameStopEvent;
 import fr.worsewarn.cosmox.game.events.PlayerJoinGameEvent;
@@ -17,6 +18,8 @@ public class CosmoxListener implements Listener
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinGameEvent event) {
+
+		if(API.instance().getManager().getPhase().getState() == 0) return;
 
 		Player player = event.getPlayer();
 		player.setGameMode(GameMode.SPECTATOR);
