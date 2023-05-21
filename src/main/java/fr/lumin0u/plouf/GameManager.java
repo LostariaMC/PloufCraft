@@ -61,9 +61,12 @@ public class GameManager
 		
 		System.arraycopy(Arrays.stream(sections1).map(cs -> cs).toArray(ChunkSection[]::new), 0, sections2, 0, sections1.length);
 	}*/
-	
 	public List<PloufPlayer> getNonSpecPlayers() {
 		return players.values().stream().filter(not(PloufPlayer::isSpectator)).filter(WrappedPlayer::isOnline).toList();
+	}
+
+	public List<PloufPlayer> getPlayers() {
+		return players.values().stream().filter(WrappedPlayer::isOnline).toList();
 	}
 	
 	public void onCosmoxStart(GameMap map) {
@@ -77,15 +80,25 @@ public class GameManager
 		Chunk spawnChunk = map.getLocation("spawnpoint").getChunk();
 		
 		int i = 1;
-		for(PloufPlayer ploufPlayer : getNonSpecPlayers())
+		for(PloufPlayer ploufPlayer : getPlayers())
 		{
-			//copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
-			ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
-			i++;
-			
-			ploufPlayer.toBukkit().getInventory().clear();
-			ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1234567890, 50, false, false));
-			ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
+			if(!ploufPlayer.isSpectator())
+			{
+
+				copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
+				ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
+				i++;
+
+				ploufPlayer.toBukkit().getInventory().clear();
+				ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1234567890, 50, false, false));
+				ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
+
+			}
+			else {
+				ploufPlayer.toBukkit().getInventory().clear();
+				ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
+				ploufPlayer.toBukkit().setGameMode(GameMode.SPECTATOR);
+			}
 		}
 		
 		new BukkitRunnable()
