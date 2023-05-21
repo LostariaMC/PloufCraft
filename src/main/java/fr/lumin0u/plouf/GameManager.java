@@ -235,25 +235,30 @@ public class GameManager
 	{
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
-			CosmoxScoreboard scoreboard = new CosmoxScoreboard(watcher.toBukkit());
-			
-			scoreboard.updateTitle("§f§lPlouf Craft");
-			scoreboard.updateLine(0, "§0");
-			scoreboard.updateLine(1, "§7§l???");
-			scoreboard.updateLine(2, "§1");
-			
-			for(int i = 0; i < getNonSpecPlayers().size(); i++)
-			{
-				scoreboard.updateLine(Math.min(18, i + 3), "§7§l???");
-			}
-			scoreboard.updateLine(Math.min(19, getNonSpecPlayers().size() + 3), "§2");
-			scoreboard.updateLine(Math.min(20, getNonSpecPlayers().size() + 4), "§3");
-			
-			watcher.toCosmox().setScoreboard(scoreboard);
+			resetScoreboard(watcher);
 		}
 		
 		updateScoreboardTime();
 		updateScoreboardScores();
+	}
+
+	public void resetScoreboard(WrappedPlayer watcher) {
+
+		CosmoxScoreboard scoreboard = new CosmoxScoreboard(watcher.toBukkit());
+
+		scoreboard.updateTitle("§f§lPlouf Craft");
+		scoreboard.updateLine(0, "§0");
+		scoreboard.updateLine(1, "§7§l???");
+		scoreboard.updateLine(2, "§1");
+
+		for(int i = 0; i < getNonSpecPlayers().size(); i++)
+		{
+			scoreboard.updateLine(Math.min(18, i + 3), "§7§l???");
+		}
+		scoreboard.updateLine(Math.min(19, getNonSpecPlayers().size() + 3), "§2");
+		scoreboard.updateLine(Math.min(20, getNonSpecPlayers().size() + 4), "§3");
+
+		watcher.toCosmox().setScoreboard(scoreboard);
 	}
 	
 	public void endGame() {

@@ -2,6 +2,7 @@ package fr.lumin0u.plouf.events;
 
 import fr.lumin0u.plouf.Plouf;
 import fr.worsewarn.cosmox.API;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.game.events.GameStartEvent;
 import fr.worsewarn.cosmox.game.events.GameStopEvent;
 import fr.worsewarn.cosmox.game.events.PlayerJoinGameEvent;
@@ -24,6 +25,8 @@ public class CosmoxListener implements Listener
 		Player player = event.getPlayer();
 		player.setGameMode(GameMode.SPECTATOR);
 		if(Bukkit.getOnlinePlayers().size()>1) player.teleport(Bukkit.getOnlinePlayers().stream().filter(all -> all != player).toList().get(0));
+
+		Plouf.getInstance().getGameManager().resetScoreboard(WrappedPlayer.of(player));
 	}
 	
 	@EventHandler
