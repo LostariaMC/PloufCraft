@@ -199,7 +199,7 @@ public class GameManager
 		
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
-			watcher.toCosmox().getScoreboard().updateLine(1, "§7§lTemps restant : §e" + (gameDuration - time) / 20 / 60 + ":" + String.format("%02d", ((gameDuration - time) / 20) % 60));
+			watcher.toCosmox().getScoreboard().updateLine(1, "§6| §eTemps restant §f━ §e" + (gameDuration - time) / 20 / 60 + ":" + String.format("%02d", ((gameDuration - time) / 20) % 60));
 		}
 	}
 	
@@ -246,7 +246,7 @@ public class GameManager
 
 		CosmoxScoreboard scoreboard = new CosmoxScoreboard(watcher.toBukkit());
 
-		scoreboard.updateTitle("§f§lPlouf Craft");
+		scoreboard.updateTitle("§f§lPLOUFCRAFT");
 		scoreboard.updateLine(0, "§0");
 		scoreboard.updateLine(1, "§7§l???");
 		scoreboard.updateLine(2, "§1");
@@ -305,7 +305,7 @@ public class GameManager
 					player.toBukkit().updateInventory();
 					player.toBukkit().getWorld().spawnParticle(Particle.TOTEM, player.toBukkit().getLocation(), 30);
 					
-					player.toCosmox().addMolecules(0.5, "craft unique");
+					player.toCosmox().addMolecules(0.5, "Craft unique");
 					
 					player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				}
@@ -326,7 +326,7 @@ public class GameManager
 					getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));
 					
 					getNonSpecPlayers().forEach(player -> {
-						player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, "nombre de joueurs");
+						player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, "Nombre de joueurs");
 						
 						player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
 						
