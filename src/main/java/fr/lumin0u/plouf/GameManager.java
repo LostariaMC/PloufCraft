@@ -335,7 +335,7 @@ public class GameManager
 						player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
 						
 						IntStream.range(0, 9).forEach(j -> player.toBukkit().getInventory().setItem(j, null));
-						player.toBukkit().getInventory().setItem(8, Items.UNIQUE_CRAFTS_HEAD);
+						player.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD);
 					});
 					
 					updateScoreboardScores(true, -1);
