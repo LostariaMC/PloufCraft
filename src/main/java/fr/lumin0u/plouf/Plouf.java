@@ -72,7 +72,7 @@ public final class Plouf extends JavaPlugin
 			}
 		});
 		
-		game = new Game("ploufcraft", "PloufCraft", "§x§F§F§5§0§5§0PloufCraft", Material.CRAFTING_TABLE, null, 2, false, true,
+		game = new Game("ploufcraft", "PloufCraft", ChatColor.of("#FF5050"), Material.CRAFTING_TABLE, null, 2, false, true,
 				List.of(
 						new Statistic("Temps de jeu", GameVariables.TIME_PLAYED, true),
 						new Statistic("Parties jouées", GameVariables.GAMES_PLAYED),

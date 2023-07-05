@@ -34,10 +34,10 @@ public class NMSUtils
 		}
 	}
 	
-	public static <T> T getHandle(Object obj) {
+	public static <T> T getHandle(Object obj, Object... params) {
 		try
 		{
-			return (T) obj.getClass().getMethod("getHandle").invoke(obj);
+			return (T) obj.getClass().getMethod("getHandle").invoke(obj, params);
 		} catch(ReflectiveOperationException e)
 		{
 			throw new RuntimeException(e);

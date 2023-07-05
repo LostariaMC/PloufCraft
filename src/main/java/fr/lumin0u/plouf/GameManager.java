@@ -17,6 +17,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.*;
 import org.bukkit.Note.Tone;
+import org.bukkit.craftbukkit.v1_20_R1.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -51,7 +52,7 @@ public class GameManager
 		return players.get(uid);
 	}
 	
-	public static void copyChunk(Chunk chunk1, Chunk chunk2) {
+	/*public static void copyChunk(Chunk chunk1, Chunk chunk2) {
 		net.minecraft.world.level.chunk.Chunk nmsChunk1 = NMSUtils.getHandle(chunk1);
 		net.minecraft.world.level.chunk.Chunk nmsChunk2 = NMSUtils.getHandle(chunk2);
 		
@@ -59,7 +60,7 @@ public class GameManager
 		ChunkSection[] sections2 = NMSUtils.Chunk_getChunkSections(nmsChunk2);
 		
 		System.arraycopy(Arrays.stream(sections1).map(cs -> cs).toArray(ChunkSection[]::new), 0, sections2, 0, sections1.length);
-	}
+	}*/
 	
 	public List<PloufPlayer> getNonSpecPlayers() {
 		return players.values().stream().filter(not(PloufPlayer::isSpectator)).filter(WrappedPlayer::isOnline).toList();
@@ -78,7 +79,7 @@ public class GameManager
 		int i = 1;
 		for(PloufPlayer ploufPlayer : getNonSpecPlayers())
 		{
-			copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
+			//copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
 			ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
 			i++;
 			
