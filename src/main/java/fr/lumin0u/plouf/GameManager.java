@@ -84,8 +84,7 @@ public class GameManager
 		{
 			if(!ploufPlayer.isSpectator())
 			{
-
-				copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
+				//copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
 				ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
 				i++;
 
