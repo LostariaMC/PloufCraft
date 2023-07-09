@@ -9,15 +9,15 @@ import fr.worsewarn.cosmox.game.GameVariables;
 import fr.worsewarn.cosmox.game.Phase;
 import fr.worsewarn.cosmox.tools.chat.Messages;
 import fr.worsewarn.cosmox.tools.map.GameMap;
+import fr.worsewarn.cosmox.tools.utils.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.*;
 import org.bukkit.Note.Tone;
-import org.bukkit.craftbukkit.v1_20_R1.CraftChunk;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -39,6 +39,7 @@ public class GameManager
 	private boolean started;
 	private int time;
 	private final Random itemRandom;
+	private GameMap map;
 	
 	final int gameDuration = 2 * 60 * 20;
 	
@@ -70,6 +71,8 @@ public class GameManager
 	}
 	
 	public void onCosmoxStart(GameMap map) {
+		this.map = map;
+		
 		for(Player player : Bukkit.getOnlinePlayers())
 			getPlayer(player.getUniqueId());
 		
@@ -209,23 +212,23 @@ public class GameManager
 	
 	public void updateScoreboardScores(boolean sorted, int maxUnique)
 	{
-		List<Tuple<PloufPlayer, String>> lines = new ArrayList<>();
+		List<Pair<PloufPlayer, String>> lines = new ArrayList<>();
 		
 		List<PloufPlayer> players = getNonSpecPlayers();
 		
 		Comparator<PloufPlayer> comparator = (p1, p2) -> Integer.compare(p2.getPoints(maxUnique), p1.getPoints(maxUnique));
 		
-		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add(new Tuple<>(player, "§7" + player.getName() + ": §f" + player.getPoints(maxUnique))));
+		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add(new Pair<>(player, "§7" + player.getName() + ": §f" + player.getPoints(maxUnique))));
 		
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
 			for(int i = 0; i < lines.size(); i++)
 			{
-				if(watcher.toCosmox().getScoreboard().size() <= i + 3 || !watcher.toCosmox().getScoreboard().getLine(i + 3).equals(lines.get(i).b()))
+				if(watcher.toCosmox().getScoreboard().size() <= i + 3 || !watcher.toCosmox().getScoreboard().getLine(i + 3).equals(lines.get(i).getRight()))
 					if(i + 3 < 17)
-						watcher.toCosmox().getScoreboard().updateLine(i + 3, lines.get(i).b());
-					else if(lines.get(i).a().equals(watcher))
-						watcher.toCosmox().getScoreboard().updateLine(18, lines.get(i).b());
+						watcher.toCosmox().getScoreboard().updateLine(i + 3, lines.get(i).getRight());
+					else if(lines.get(i).getLeft().equals(watcher))
+						watcher.toCosmox().getScoreboard().updateLine(18, lines.get(i).getRight());
 			}
 		}
 	}
@@ -266,6 +269,8 @@ public class GameManager
 		updateScoreboardTime();
 		updateScoreboardScores(true, 0);
 		
+		((World)map.getWorld()).getEntitiesByClass(Item.class).forEach(Entity::remove);
+		
 		for(PloufPlayer player : getNonSpecPlayers())
 		{
 			player.toBukkit().setGameMode(GameMode.ADVENTURE);
@@ -285,6 +290,39 @@ public class GameManager
 		new BukkitRunnable()
 		{
 			int i = 0;
+			
+			public void prePhaseEnd() {
+				int maxPoints = getNonSpecPlayers().stream().mapToInt(player -> player.getPoints(-1)).max().getAsInt();
+				
+				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) == maxPoints).forEach(player ->
+				{
+					player.toCosmox().addMolecules(5, "Victoire");
+					
+					player.toCosmox().addStatistic(GameVariables.WIN, 1);
+					
+					plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
+				});
+				plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
+				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));
+				
+				getNonSpecPlayers().forEach(player -> {
+					player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, "Nombre de joueurs");
+					
+					player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
+					
+					player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());
+					player.toCosmox().addStatistic(Plouf.PLOUF_UNIQUE_ITEMS_CRAFTED, player.getUniqueCrafts().size());
+					player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
+				});
+				
+				updateScoreboardScores(true, -1);
+			}
+			
+			public void postPhaseEnd() {
+				getNonSpecPlayers().forEach(player -> {
+					player.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD);
+				});
+			}
 			
 			@Override
 			public void run() {
@@ -311,38 +349,12 @@ public class GameManager
 				
 				if(!any)
 				{
-					int maxPoints = getNonSpecPlayers().stream().mapToInt(player -> player.getPoints(-1)).max().getAsInt();
-					
-					getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) == maxPoints).forEach(player ->
-					{
-						player.toCosmox().addMolecules(5, "Victoire");
-						
-						player.toCosmox().addStatistic(GameVariables.WIN, 1);
-						
-						plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
-					});
-					plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
-					getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));
-					
-					getNonSpecPlayers().forEach(player -> {
-						player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, "Nombre de joueurs");
-						
-						player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
-						
-						player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());
-						player.toCosmox().addStatistic(Plouf.PLOUF_UNIQUE_ITEMS_CRAFTED, player.getUniqueCrafts().size());
-						player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
-						
-						IntStream.range(0, 9).forEach(j -> player.toBukkit().getInventory().setItem(j, null));
-						player.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD);
-					});
-					
-					updateScoreboardScores(true, -1);
-					
+					prePhaseEnd();
 					cancel();
 					API.instance().getManager().setPhase(Phase.END);
+					
+					Bukkit.getScheduler().runTaskLater(plouf, this::postPhaseEnd, 20);
 				}
-				
 				i++;
 			}
 		}.runTaskTimer(plouf, 60, 17);
