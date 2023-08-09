@@ -70,6 +70,10 @@ public class GameManager
 		return players.values().stream().filter(WrappedPlayer::isOnline).toList();
 	}
 	
+	public Location getSpawnpoint(int i) {
+		return map.getLocation("spawnpoint").clone().add(Integer.parseInt(map.getStr("spawnoffset")) * i, 0, 0);
+	}
+	
 	public void onCosmoxStart(GameMap map) {
 		this.map = map;
 		
@@ -88,7 +92,7 @@ public class GameManager
 			if(!ploufPlayer.isSpectator())
 			{
 				//copyChunk(spawnChunk, spawnChunk.getWorld().getChunkAt(spawnChunk.getX() + i, spawnChunk.getZ()));
-				ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
+				ploufPlayer.toBukkit().teleport(getSpawnpoint(i));
 				i++;
 
 				ploufPlayer.toBukkit().getInventory().clear();
@@ -98,7 +102,7 @@ public class GameManager
 			}
 			else {
 				ploufPlayer.toBukkit().getInventory().clear();
-				ploufPlayer.toBukkit().teleport(map.getLocation("spawnpoint").clone().add(16 * i, 0, 0));
+				ploufPlayer.toBukkit().teleport(getSpawnpoint(i));
 				ploufPlayer.toBukkit().setGameMode(GameMode.SPECTATOR);
 			}
 		}

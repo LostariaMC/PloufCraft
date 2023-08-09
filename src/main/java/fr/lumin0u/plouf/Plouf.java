@@ -86,7 +86,8 @@ public final class Plouf extends JavaPlugin
 				List.of(new MapTemplate(MapType.NONE, List.of(
 						new MapLocation("name", MapLocationType.STRING),
 						new MapLocation("authors", MapLocationType.STRING),
-						new MapLocation("spawnpoint", MapLocationType.LOCATION)
+						new MapLocation("spawnpoint", MapLocationType.LOCATION),
+						new MapLocation("spawnoffset", MapLocationType.STRING)
 				)))
 		);
 		
