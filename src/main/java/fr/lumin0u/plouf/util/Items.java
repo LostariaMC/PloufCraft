@@ -21,7 +21,9 @@ public class Items
 	
 	public static void buildGiveableItems() {
 		
-		giveableItems = Arrays.stream(Material.values()).filter(mat ->
+		giveableItems = Arrays.stream(Material.values())
+				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
+				.filter(mat ->
 				{
 					for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
 					{

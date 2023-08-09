@@ -3,7 +3,10 @@ package fr.lumin0u.plouf.events;
 import fr.lumin0u.plouf.GameManager;
 import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
+import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.Utils;
+import fr.worsewarn.cosmox.API;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -15,9 +18,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.List;
+
+import static fr.lumin0u.plouf.Plouf.PLOUF_AUTO_REMOVE_NONINGREDIENTS;
 
 public class CraftListener implements Listener
 {
@@ -34,9 +40,13 @@ public class CraftListener implements Listener
 			if(!player.getCraftedItems().contains(crafted))
 			{
 				player.addCraftedItem(crafted);
+				
+				if(API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS) && !Items.getGiveableItems().contains(crafted)) {
+					event.setCurrentItem(new ItemStack(Material.AIR));
+				}
+				
 				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK);
-				fw.setTicksToDetonate(0);
-				fw.detonate();
+				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 10);
 				
 				FireworkMeta meta = fw.getFireworkMeta();
 				meta.addEffect(FireworkEffect.builder().withColor(Utils.choice(List.of(Color.BLUE, Color.LIME, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.WHITE, Color.AQUA, Color.FUCHSIA, Color.AQUA, Color.GREEN, Color.NAVY, Color.RED, Color.RED, Color.YELLOW, Color.TEAL))).build());
