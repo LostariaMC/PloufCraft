@@ -26,9 +26,9 @@ public class PloufPlayer extends WrappedPlayer
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if(isOnline() && API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS)) {
+				if(Plouf.getInstance().getGameManager().isStarted() && isOnline() && API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS)) {
 					for(ItemStack item : toBukkit().getInventory()) {
-						if(!Items.getGiveableItems().contains(item.getType())) {
+						if(Items.isIngredient(item.getType())) {
 							Bukkit.getScheduler().runTask(Plouf.getInstance(), () -> toBukkit().getInventory().remove(item.getType()));
 						}
 					}

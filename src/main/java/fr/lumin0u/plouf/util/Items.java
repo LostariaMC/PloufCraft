@@ -23,22 +23,7 @@ public class Items
 		
 		giveableItems = Arrays.stream(Material.values())
 				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
-				.filter(mat ->
-				{
-					for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
-					{
-						Recipe recipe = it.next();
-						if(recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getIngredientMap().values().stream().filter(Objects::nonNull).anyMatch(i -> i.getType().equals(mat)))
-						{
-							return true;
-						}
-						if(recipe instanceof ShapelessRecipe shapelessRecipe && shapelessRecipe.getIngredientList().stream().filter(Objects::nonNull).anyMatch(i -> i.getType().equals(mat)))
-						{
-							return true;
-						}
-					}
-					return false;
-				}).collect(ImmutableSet.toImmutableSet());
+				.filter(Items::isIngredient).collect(ImmutableSet.toImmutableSet());
 		
 		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableSet.toImmutableSet());
 	}
@@ -59,4 +44,20 @@ public class Items
 	}
 	
 	public static final ItemStack DEFAULT_PICKAXE = new ItemBuilder(Material.IRON_PICKAXE).setUnbreakable(true).buildImmutable();
+	
+	public static boolean isIngredient(Material material) {
+		for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
+		{
+			Recipe recipe = it.next();
+			if(recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getChoiceMap().values().stream().anyMatch(rc -> rc.test(new ItemStack(material))))
+			{
+				return true;
+			}
+			if(recipe instanceof ShapelessRecipe shapelessRecipe && shapelessRecipe.getChoiceList().stream().anyMatch(rc -> rc.test(new ItemStack(material))))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
