@@ -23,7 +23,8 @@ public class Items
 		
 		giveableItems = Arrays.stream(Material.values())
 				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
-				.filter(Items::isIngredient).collect(ImmutableSet.toImmutableSet());
+				.filter(Items::isIngredient)
+				.collect(ImmutableSet.toImmutableSet());
 		
 		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableSet.toImmutableSet());
 	}
@@ -49,11 +50,11 @@ public class Items
 		for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
 		{
 			Recipe recipe = it.next();
-			if(recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getChoiceMap().values().stream().anyMatch(rc -> rc.test(new ItemStack(material))))
+			if(recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getChoiceMap().values().stream().filter(Objects::nonNull).anyMatch(rc -> rc.test(new ItemStack(material))))
 			{
 				return true;
 			}
-			if(recipe instanceof ShapelessRecipe shapelessRecipe && shapelessRecipe.getChoiceList().stream().anyMatch(rc -> rc.test(new ItemStack(material))))
+			if(recipe instanceof ShapelessRecipe shapelessRecipe && shapelessRecipe.getChoiceList().stream().filter(Objects::nonNull).anyMatch(rc -> rc.test(new ItemStack(material))))
 			{
 				return true;
 			}
