@@ -15,18 +15,26 @@ import java.util.*;
 public class Items
 {
 	private static ImmutableSet<Material> giveableItems;
+	private static ImmutableSet<Material> ingredients;
 	private static ImmutableSet<Material> noWoodGiveableItems;
 	
 	public static final ItemStack UNIQUE_CRAFTS_HEAD = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§eCrafts uniques des joueurs").setLore(" §e§l> §fClique §7pour voir les crafts uniques", "§7des autres joueurs").buildImmutable();
 	
 	public static void buildGiveableItems() {
 		
-		giveableItems = Arrays.stream(Material.values())
+		ingredients = Arrays.stream(Material.values())
+				.filter(Items::calculateIsIngredient)
+				.collect(ImmutableSet.toImmutableSet());
+		
+		giveableItems = ingredients.stream()
 				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
-				.filter(Items::isIngredient)
 				.collect(ImmutableSet.toImmutableSet());
 		
 		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableSet.toImmutableSet());
+	}
+	
+	public static Set<Material> getIngredients() {
+		return ingredients;
 	}
 	
 	public static Set<Material> getGiveableItems() {
@@ -46,7 +54,7 @@ public class Items
 	
 	public static final ItemStack DEFAULT_PICKAXE = new ItemBuilder(Material.IRON_PICKAXE).setUnbreakable(true).buildImmutable();
 	
-	public static boolean isIngredient(Material material) {
+	private static boolean calculateIsIngredient(Material material) {
 		for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
 		{
 			Recipe recipe = it.next();
@@ -60,5 +68,9 @@ public class Items
 			}
 		}
 		return false;
+	}
+	
+	public static boolean memIsIngredient(Material material) {
+		return ingredients.contains(material);
 	}
 }

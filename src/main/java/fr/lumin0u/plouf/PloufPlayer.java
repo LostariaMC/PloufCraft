@@ -4,6 +4,7 @@ import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.game.teams.Team;
+import fr.worsewarn.cosmox.tools.world.NPC.ItemSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +19,7 @@ public class PloufPlayer extends WrappedPlayer
 {
 	private final Set<Material> craftedItems = new HashSet<>();
 	private Set<Material> uniqueCrafts = new HashSet<>();
-	private Set<Block> placedBlocks = new HashSet<>();
+	private final Set<Block> placedBlocks = new HashSet<>();
 	
 	public PloufPlayer(UUID uid) {
 		super(uid);
@@ -28,7 +29,7 @@ public class PloufPlayer extends WrappedPlayer
 			public void run() {
 				if(Plouf.getInstance().getGameManager().isStarted() && isOnline() && API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS)) {
 					for(ItemStack item : toBukkit().getInventory()) {
-						if(!Items.isIngredient(item.getType())) {
+						if(item != null && !Items.memIsIngredient(item.getType())) {
 							Bukkit.getScheduler().runTask(Plouf.getInstance(), () -> toBukkit().getInventory().remove(item.getType()));
 						}
 					}
