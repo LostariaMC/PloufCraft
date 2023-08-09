@@ -41,10 +41,6 @@ public class CraftListener implements Listener
 			{
 				player.addCraftedItem(crafted);
 				
-				if(API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS) && !Items.getGiveableItems().contains(crafted)) {
-					event.setCurrentItem(new ItemStack(Material.AIR));
-				}
-				
 				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK);
 				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 10);
 				

@@ -102,7 +102,7 @@ public final class Plouf extends JavaPlugin
 						false, false));
 		
 		game.addParameter(new Parameter(PLOUF_AUTO_REMOVE_NONINGREDIENTS, "", List.of("Désactivé", "Activé"),
-				new ItemBuilder(Material.OAK_LOG).setDisplayName("§bRetrait des non-ingrédients").addLore(List.of(" ", "§7Permet de retirer automatiquement", "§7les items craftés qui ne", "§7permettent pas de faire de crafts", " ", "§e Actuellement : §6%b")).build(),
+				new ItemBuilder(Material.STRUCTURE_VOID).setDisplayName("§bRetrait des non-ingrédients").addLore(List.of(" ", "§7Permet de retirer automatiquement", "§7les items craftés qui ne", "§7permettent pas de faire de crafts", " ", "§e Actuellement : §6%b")).build(),
 				false, false));
 		
 		API.instance().registerNewGame(game);

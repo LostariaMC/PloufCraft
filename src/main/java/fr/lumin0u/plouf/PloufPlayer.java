@@ -1,11 +1,18 @@
 package fr.lumin0u.plouf;
 
+import fr.lumin0u.plouf.util.Items;
+import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.game.teams.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+
+import static fr.lumin0u.plouf.Plouf.PLOUF_AUTO_REMOVE_NONINGREDIENTS;
 
 public class PloufPlayer extends WrappedPlayer
 {
@@ -15,6 +22,19 @@ public class PloufPlayer extends WrappedPlayer
 	
 	public PloufPlayer(UUID uid) {
 		super(uid);
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if(isOnline() && API.instance().getGameParameterBoolean(PLOUF_AUTO_REMOVE_NONINGREDIENTS)) {
+					for(ItemStack item : toBukkit().getInventory()) {
+						if(!Items.getGiveableItems().contains(item.getType())) {
+							Bukkit.getScheduler().runTask(Plouf.getInstance(), () -> toBukkit().getInventory().remove(item.getType()));
+						}
+					}
+				}
+			}
+		}.runTaskTimerAsynchronously(Plouf.getInstance(), 5, 5);
 	}
 	
 	public boolean isSpectator() {
