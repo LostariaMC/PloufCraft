@@ -63,7 +63,7 @@ public class GameManager
 		System.arraycopy(Arrays.stream(sections1).map(cs -> cs).toArray(ChunkSection[]::new), 0, sections2, 0, sections1.length);
 	}*/
 	public List<PloufPlayer> getNonSpecPlayers() {
-		return players.values().stream().filter(not(PloufPlayer::isSpectator)).filter(WrappedPlayer::isOnline).toList();
+		return players.values().stream().filter(not(PloufPlayer::isSpectator)).toList();
 	}
 
 	public List<PloufPlayer> getPlayers() {
@@ -135,7 +135,7 @@ public class GameManager
 				
 				Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
 				ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
-				getNonSpecPlayers().forEach(player ->
+				getNonSpecPlayers().stream().filter(WrappedPlayer::isOnline).forEach(player ->
 				{
 					if(player.toBukkit().getInventory().firstEmpty() != -1)
 						player.toBukkit().getInventory().addItem(item);
@@ -277,16 +277,18 @@ public class GameManager
 		
 		for(PloufPlayer player : getNonSpecPlayers())
 		{
-			player.toBukkit().setGameMode(GameMode.ADVENTURE);
-			player.toBukkit().setAllowFlight(true);
-			player.toBukkit().getInventory().clear();
-			player.toBukkit().setItemOnCursor(null);
+			if(player.isOnline()) {
+				player.toBukkit().setGameMode(GameMode.ADVENTURE);
+				player.toBukkit().setAllowFlight(true);
+				player.toBukkit().getInventory().clear();
+				player.toBukkit().setItemOnCursor(null);
+				
+				player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_4, 1, 1.6f);
+				
+				player.toBukkit().removePotionEffect(PotionEffectType.FAST_DIGGING);
+			}
 			
 			player.calculateUniqueCrafts(getNonSpecPlayers());
-			
-			player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_4, 1, 1.6f);
-			
-			player.toBukkit().removePotionEffect(PotionEffectType.FAST_DIGGING);
 		}
 		
 		Bukkit.broadcastMessage(Plouf.getGame().getPrefix() + "§c§lLa partie est terminée !");
@@ -323,9 +325,7 @@ public class GameManager
 			}
 			
 			public void postPhaseEnd() {
-				getNonSpecPlayers().forEach(player -> {
-					player.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD);
-				});
+				getNonSpecPlayers().forEach(player -> player.ifOnline(pl -> pl.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD)));
 			}
 			
 			@Override
