@@ -3,13 +3,13 @@ package fr.lumin0u.plouf;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.lumin0u.plouf.events.CosmoxListener;
-import fr.lumin0u.plouf.events.CraftListener;
 import fr.lumin0u.plouf.util.ItemBuilder;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.statistics.Statistic;
-import fr.worsewarn.cosmox.game.*;
+import fr.worsewarn.cosmox.game.Game;
+import fr.worsewarn.cosmox.game.GameVariables;
 import fr.worsewarn.cosmox.game.configuration.Parameter;
 import fr.worsewarn.cosmox.tools.items.DefaultItemSlot;
 import fr.worsewarn.cosmox.tools.map.MapLocation;
@@ -19,7 +19,6 @@ import fr.worsewarn.cosmox.tools.map.MapType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -51,8 +50,11 @@ public final class Plouf extends JavaPlugin
 		Bukkit.getScheduler().runTaskTimer(API.instance(), () -> currentTick++, 1, 1);
 		
 		getLogger().info("Création de la liste des items... (peut prendre du temps)");
+		
+		long startTime = System.currentTimeMillis();
 		Items.buildGiveableItems();
-		getLogger().info("Liste des items crée");
+		long endTime = System.currentTimeMillis();
+		getLogger().info(String.format("Liste des items crée en %.3f secondes", (double) (endTime - startTime) / 1000));
 		
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		

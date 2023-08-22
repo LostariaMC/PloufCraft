@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -74,5 +75,10 @@ public class CraftListener implements Listener
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		PloufPlayer.of(event.getPlayer()).getPlacedBlocks().add(event.getBlock());
+	}
+	
+	@EventHandler
+	public void onRecipeDiscovery(PlayerRecipeDiscoverEvent event) {
+		event.setCancelled(true);
 	}
 }

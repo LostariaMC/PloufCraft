@@ -1,7 +1,6 @@
 package fr.lumin0u.plouf;
 
 import fr.lumin0u.plouf.util.Items;
-import fr.lumin0u.plouf.util.NMSUtils;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.scoreboard.CosmoxScoreboard;
@@ -28,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static fr.lumin0u.plouf.Plouf.PICKAXE_SLOT;
 import static fr.lumin0u.plouf.Plouf.PLOUF_WOOD_DEACTIVATED;
 import static java.util.function.Predicate.not;
 
@@ -122,6 +120,8 @@ public class GameManager
 		started = true;
 		
 		int itemDelay = getItemDelay();
+		
+		Bukkit.getOnlinePlayers().forEach(p -> p.undiscoverRecipes(p.getDiscoveredRecipes()));
 		
 		new BukkitRunnable()
 		{
