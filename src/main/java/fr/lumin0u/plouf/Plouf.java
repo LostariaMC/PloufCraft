@@ -3,9 +3,11 @@ package fr.lumin0u.plouf;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.lumin0u.plouf.events.CosmoxListener;
+import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.ItemBuilder;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
+import fr.worsewarn.cosmox.api.achievements.Achievement;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.statistics.Statistic;
 import fr.worsewarn.cosmox.game.Game;
@@ -83,7 +85,13 @@ public final class Plouf extends JavaPlugin
 						new Statistic("Items craftés", PLOUF_ITEMS_CRAFTED, true, true),
 						new Statistic("Items uniques craftés", PLOUF_UNIQUE_ITEMS_CRAFTED, true, true)
 				),
-				List.of(),
+				List.of(Achievements.PLOUFCRAFT,
+						Achievements.CRAFT_FURNACE,
+						Achievements.CRAFT_WORKBENCH,
+						Achievements.PLAYER_INVENTORY_CRAFTING,
+						Achievements.WIN_NO_UNIQUE,
+						Achievements.TOOL_CRAFTING,
+						Achievements.WIN_NO_WOOD),
 				List.of("", "§7Craftez des trucs ! Vite !"),
 				List.of(new MapTemplate(MapType.NONE, List.of(
 						new MapLocation("name", MapLocationType.STRING),

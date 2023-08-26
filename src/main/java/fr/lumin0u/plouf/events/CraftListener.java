@@ -3,6 +3,7 @@ package fr.lumin0u.plouf.events;
 import fr.lumin0u.plouf.GameManager;
 import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
+import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.Utils;
 import fr.worsewarn.cosmox.API;
@@ -14,20 +15,28 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static fr.lumin0u.plouf.Plouf.PLOUF_AUTO_REMOVE_NONINGREDIENTS;
 
 public class CraftListener implements Listener
 {
+	private static final List<Material> WOODEN_TOOLS = List.of(Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL);
+	
 	@EventHandler
 	public void itemCraftEvent(CraftItemEvent event) {
 		GameManager gm = Plouf.getInstance().getGameManager();
@@ -41,6 +50,23 @@ public class CraftListener implements Listener
 			if(!player.getCraftedItems().contains(crafted))
 			{
 				player.addCraftedItem(crafted);
+				
+				if(crafted == Material.FURNACE) {
+					player.toCosmox().grantAdvancement(Achievements.CRAFT_FURNACE.getId());
+				}
+				if(crafted == Material.CRAFTING_TABLE) {
+					player.toCosmox().grantAdvancement(Achievements.CRAFT_WORKBENCH.getId());
+				}
+				if(player.getCraftedItems().containsAll(WOODEN_TOOLS)) {
+					player.toCosmox().grantAdvancement(Achievements.TOOL_CRAFTING.getId());
+				}
+				if(!player.isOpenedCraftingTable()) {
+					player.toCosmox().grantAdvancement(Achievements.PLAYER_INVENTORY_CRAFTING.getId());
+				}
+				
+				if(!player.didUseWood() && Arrays.stream(event.getInventory().getMatrix()).filter(Objects::nonNull).map(ItemStack::getType).anyMatch(Items::isWood)) {
+					player.setUsedWood(true);
+				}
 				
 				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK);
 				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 10);
@@ -80,5 +106,12 @@ public class CraftListener implements Listener
 	@EventHandler
 	public void onRecipeDiscovery(PlayerRecipeDiscoverEvent event) {
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event) {
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType().equals(Material.CRAFTING_TABLE)) {
+			PloufPlayer.of(event.getPlayer()).setOpenedCraftingTable(true);
+		}
 	}
 }

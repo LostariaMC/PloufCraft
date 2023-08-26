@@ -11,6 +11,9 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Predicate;
+
+import static java.util.function.Predicate.not;
 
 public class Items
 {
@@ -30,7 +33,7 @@ public class Items
 				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
 				.collect(ImmutableSet.toImmutableSet());
 		
-		noWoodGiveableItems = giveableItems.stream().filter(material -> !material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)")).collect(ImmutableSet.toImmutableSet());
+		noWoodGiveableItems = giveableItems.stream().filter(not(Items::isWood)).collect(ImmutableSet.toImmutableSet());
 	}
 	
 	public static Set<Material> getIngredients() {
@@ -72,5 +75,9 @@ public class Items
 	
 	public static boolean memIsIngredient(Material material) {
 		return ingredients.contains(material);
+	}
+	
+	public static boolean isWood(Material material) {
+		return material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)");
 	}
 }

@@ -1,5 +1,6 @@
 package fr.lumin0u.plouf;
 
+import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
@@ -38,6 +39,7 @@ public class GameManager
 	private int time;
 	private final Random itemRandom;
 	private GameMap map;
+	private boolean gaveWood;
 	
 	final int gameDuration = 2 * 60 * 20;
 	
@@ -134,6 +136,8 @@ public class GameManager
 					cancel();
 				
 				Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
+				if(!gaveWood && Items.isWood(material))
+					gaveWood = true;
 				ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
 				getNonSpecPlayers().stream().filter(WrappedPlayer::isOnline).forEach(player ->
 				{
@@ -307,6 +311,14 @@ public class GameManager
 					player.toCosmox().addStatistic(GameVariables.WIN, 1);
 					
 					plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
+					
+					if(player.getUniqueCrafts().isEmpty()) {
+						player.toCosmox().grantAdvancement(Achievements.WIN_NO_UNIQUE.getId());
+					}
+					
+					if(!player.didUseWood() && gaveWood) {
+						player.toCosmox().grantAdvancement(Achievements.WIN_NO_WOOD.getId());
+					}
 				});
 				plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
 				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));

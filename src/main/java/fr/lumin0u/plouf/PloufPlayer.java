@@ -21,6 +21,9 @@ public class PloufPlayer extends WrappedPlayer
 	private Set<Material> uniqueCrafts = new HashSet<>();
 	private final Set<Block> placedBlocks = new HashSet<>();
 	
+	private boolean usedWood = false;
+	private boolean openedCraftingTable = false;
+	
 	public PloufPlayer(UUID uid) {
 		super(uid);
 		
@@ -77,5 +80,21 @@ public class PloufPlayer extends WrappedPlayer
 	
 	public static PloufPlayer of(Object player) {
 		return WrappedPlayer.of(player).to(PloufPlayer.class);
+	}
+	
+	public boolean didUseWood() {
+		return usedWood;
+	}
+	
+	public void setUsedWood(boolean usedWood) {
+		this.usedWood = usedWood;
+	}
+	
+	public boolean isOpenedCraftingTable() {
+		return openedCraftingTable;
+	}
+	
+	public void setOpenedCraftingTable(boolean openedCraftingTable) {
+		this.openedCraftingTable = openedCraftingTable;
 	}
 }
