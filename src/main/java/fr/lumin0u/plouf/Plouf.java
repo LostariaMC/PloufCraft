@@ -42,6 +42,7 @@ public final class Plouf extends JavaPlugin
 	private Game game;
 	private static Plouf instance;
 	private ProtocolManager protocolManager;
+	private boolean craftsReady;
 	
 	private static long currentTick;
 	
@@ -51,12 +52,14 @@ public final class Plouf extends JavaPlugin
 		
 		Bukkit.getScheduler().runTaskTimer(API.instance(), () -> currentTick++, 1, 1);
 		
-		getLogger().info("Création de la liste des items... (peut prendre du temps)");
-		
-		long startTime = System.currentTimeMillis();
-		Items.buildGiveableItems();
-		long endTime = System.currentTimeMillis();
-		getLogger().info(String.format("Liste des items crée en %.3f secondes", (double) (endTime - startTime) / 1000));
+		Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+			getLogger().info("Création de la liste des items... (peut prendre du temps, tache asynchrone)");
+			long startTime = System.currentTimeMillis();
+			Items.buildGiveableItems();
+			long endTime = System.currentTimeMillis();
+			getLogger().info(String.format("Liste des items créée en %.3f secondes", (double) (endTime - startTime) / 1000));
+			craftsReady = true;
+		});
 		
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		
@@ -91,7 +94,8 @@ public final class Plouf extends JavaPlugin
 						Achievements.PLAYER_INVENTORY_CRAFTING,
 						Achievements.WIN_NO_UNIQUE,
 						Achievements.TOOL_CRAFTING,
-						Achievements.WIN_NO_WOOD),
+						Achievements.WIN_NO_WOOD,
+						Achievements.WIN_REMONTADA),
 				List.of("", "§7Craftez des trucs ! Vite !"),
 				List.of(new MapTemplate(MapType.NONE, List.of(
 						new MapLocation("name", MapLocationType.STRING),
@@ -144,5 +148,9 @@ public final class Plouf extends JavaPlugin
 	
 	public static ProtocolManager getProtocolManager() {
 		return instance.protocolManager;
+	}
+	
+	public boolean isCraftsReady() {
+		return craftsReady;
 	}
 }

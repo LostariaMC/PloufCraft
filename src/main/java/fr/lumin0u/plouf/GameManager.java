@@ -80,8 +80,6 @@ public class GameManager
 		for(Player player : Bukkit.getOnlinePlayers())
 			getPlayer(player.getUniqueId());
 		
-		API.instance().getManager().setPhase(Phase.GAME);
-		
 		int playerCount = (int) players.values().stream().filter(not(PloufPlayer::isSpectator)).filter(WrappedPlayer::isOnline).count();
 		
 		Chunk spawnChunk = map.getLocation("spawnpoint").getChunk();
@@ -96,7 +94,7 @@ public class GameManager
 				i++;
 
 				ploufPlayer.toBukkit().getInventory().clear();
-				ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1234567890, 50, false, false));
+				ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, PotionEffect.INFINITE_DURATION, 50, false, false));
 				ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
 
 			}
@@ -113,11 +111,13 @@ public class GameManager
 			public void run() {
 				start();
 			}
-		}.runTaskLater(plouf, 200);
+		}.runTaskLater(plouf, 120);
 	}
 	
 	public void start() {
 		resetScoreboard();
+		
+		API.instance().getManager().setPhase(Phase.GAME);
 		
 		started = true;
 		
@@ -279,6 +279,8 @@ public class GameManager
 		
 		((World)map.getWorld()).getEntitiesByClass(Item.class).forEach(Entity::remove);
 		
+		int maxPoints = getNonSpecPlayers().stream().mapToInt(player -> player.getPoints(0)).max().orElse(0);
+		
 		for(PloufPlayer player : getNonSpecPlayers())
 		{
 			if(player.isOnline()) {
@@ -290,6 +292,10 @@ public class GameManager
 				player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_4, 1, 1.6f);
 				
 				player.toBukkit().removePotionEffect(PotionEffectType.FAST_DIGGING);
+				
+				if(player.getPoints(0) <= maxPoints - 10) {
+					player.setPotentialRemontada(true);
+				}
 			}
 			
 			player.calculateUniqueCrafts(getNonSpecPlayers());
@@ -315,9 +321,11 @@ public class GameManager
 					if(player.getUniqueCrafts().isEmpty()) {
 						player.toCosmox().grantAdvancement(Achievements.WIN_NO_UNIQUE.getId());
 					}
-					
 					if(!player.didUseWood() && gaveWood) {
 						player.toCosmox().grantAdvancement(Achievements.WIN_NO_WOOD.getId());
+					}
+					if(player.isPotentialRemontada()) {
+						player.toCosmox().grantAdvancement(Achievements.WIN_REMONTADA.getId());
 					}
 				});
 				plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));

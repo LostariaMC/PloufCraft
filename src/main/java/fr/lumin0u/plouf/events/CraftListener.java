@@ -21,10 +21,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Arrays;
@@ -60,7 +62,7 @@ public class CraftListener implements Listener
 				if(player.getCraftedItems().containsAll(WOODEN_TOOLS)) {
 					player.toCosmox().grantAdvancement(Achievements.TOOL_CRAFTING.getId());
 				}
-				if(!player.isOpenedCraftingTable()) {
+				if(event.getInventory().getMatrix().length == 4) {
 					player.toCosmox().grantAdvancement(Achievements.PLAYER_INVENTORY_CRAFTING.getId());
 				}
 				
@@ -106,12 +108,5 @@ public class CraftListener implements Listener
 	@EventHandler
 	public void onRecipeDiscovery(PlayerRecipeDiscoverEvent event) {
 		event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onInteract(PlayerInteractEvent event) {
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType().equals(Material.CRAFTING_TABLE)) {
-			PloufPlayer.of(event.getPlayer()).setOpenedCraftingTable(true);
-		}
 	}
 }

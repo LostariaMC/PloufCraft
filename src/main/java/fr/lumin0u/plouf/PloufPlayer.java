@@ -22,7 +22,7 @@ public class PloufPlayer extends WrappedPlayer
 	private final Set<Block> placedBlocks = new HashSet<>();
 	
 	private boolean usedWood = false;
-	private boolean openedCraftingTable = false;
+	private boolean potentialRemontada = false;
 	
 	public PloufPlayer(UUID uid) {
 		super(uid);
@@ -90,11 +90,11 @@ public class PloufPlayer extends WrappedPlayer
 		this.usedWood = usedWood;
 	}
 	
-	public boolean isOpenedCraftingTable() {
-		return openedCraftingTable;
+	public boolean isPotentialRemontada() {
+		return potentialRemontada;
 	}
 	
-	public void setOpenedCraftingTable(boolean openedCraftingTable) {
-		this.openedCraftingTable = openedCraftingTable;
+	public void setPotentialRemontada(boolean potentialRemontada) {
+		this.potentialRemontada = potentialRemontada;
 	}
 }
