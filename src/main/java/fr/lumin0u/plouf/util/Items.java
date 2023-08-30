@@ -18,6 +18,7 @@ public class Items
 	private static ImmutableSet<Material> giveableItems;
 	private static ImmutableSet<Material> ingredients;
 	private static ImmutableSet<Material> noWoodGiveableItems;
+	private static boolean finishedLoading = false;
 	
 	public static final ItemStack UNIQUE_CRAFTS_HEAD = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§eCrafts uniques des joueurs").setLore(" §e§l> §fClique §7pour voir les crafts uniques", "§7des autres joueurs").buildImmutable();
 	
@@ -32,6 +33,12 @@ public class Items
 				.collect(ImmutableSet.toImmutableSet());
 		
 		noWoodGiveableItems = giveableItems.stream().filter(not(Items::isWood)).collect(ImmutableSet.toImmutableSet());
+		
+		finishedLoading = true;
+	}
+	
+	public static boolean isFinishedLoading() {
+		return finishedLoading;
 	}
 	
 	public static Set<Material> getIngredients() {

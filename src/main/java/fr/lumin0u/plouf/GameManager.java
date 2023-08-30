@@ -128,24 +128,38 @@ public class GameManager
 		new BukkitRunnable()
 		{
 			int i = 0;
+			boolean waitingForItems = false;
 			
 			@Override
 			public void run() {
 				
-				if(itemDelay * ++i > gameDuration - 200)
-					cancel();
-				
-				Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
-				if(!gaveWood && Items.isWood(material))
-					gaveWood = true;
-				ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
-				getNonSpecPlayers().stream().filter(WrappedPlayer::isOnline).forEach(player ->
-				{
-					if(player.toBukkit().getInventory().firstEmpty() != -1)
-						player.toBukkit().getInventory().addItem(item);
-					else
-						player.toBukkit().getWorld().dropItem(player.toBukkit().getLocation(), item);
-				});
+				if(!Items.isFinishedLoading()) {
+					if(!waitingForItems) {
+						Bukkit.broadcastMessage("§cLa liste des items n'a pas encore été complètement construite, veuillez patientez pendant sa création. Si cela prend trop de temps, merci de contacter un responsable");
+						waitingForItems = true;
+					}
+				}
+				else {
+					if(waitingForItems) {
+						Bukkit.broadcastMessage("§cLa liste a été créée, début de la partie !");
+						waitingForItems = false;
+					}
+					
+					if(itemDelay * ++i > gameDuration - 200)
+						cancel();
+					
+					Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
+					if(!gaveWood && Items.isWood(material))
+						gaveWood = true;
+					ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
+					getNonSpecPlayers().stream().filter(WrappedPlayer::isOnline).forEach(player ->
+					{
+						if(player.toBukkit().getInventory().firstEmpty() != -1)
+							player.toBukkit().getInventory().addItem(item);
+						else
+							player.toBukkit().getWorld().dropItem(player.toBukkit().getLocation(), item);
+					});
+				}
 			}
 		}.runTaskTimer(plouf, 0, itemDelay);
 		
