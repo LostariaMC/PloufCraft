@@ -1,6 +1,5 @@
 package fr.lumin0u.plouf.util;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 import static java.util.function.Predicate.not;
 
@@ -78,6 +76,6 @@ public class Items
 	}
 	
 	public static boolean isWood(Material material) {
-		return material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM)");
+		return material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM|.*HYPHAE)") || material == Material.BAMBOO_BLOCK || material == Material.STRIPPED_BAMBOO_BLOCK;
 	}
 }
