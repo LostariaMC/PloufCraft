@@ -163,31 +163,10 @@ public class GameManager
 			}
 		}.runTaskTimer(plouf, 0, itemDelay);
 		
-		/*new BukkitRunnable()
-		{
-			@Override
-			public void run() {
-				if(!isStarted())
-				{
-					cancel();
-					return;
-				}
-				
-				for(PloufPlayer player : getNonSpecPlayers())
-				{
-					for(ItemStack item : player.toBukkit().getInventory())
-						if(item != null && !Items.getGiveableItems().contains(item.getType()))
-							player.toBukkit().getInventory().remove(item);
-					player.toBukkit().updateInventory();
-				}
-			}
-		}.runTaskTimer(main, 0, 10);*/
-		
 		new BukkitRunnable()
 		{
 			@Override
 			public void run() {
-				
 				if(time == gameDuration)
 				{
 					endGame();
@@ -214,7 +193,8 @@ public class GameManager
 					}
 				}
 				
-				time++;
+				if(Items.isFinishedLoading())
+					time++;
 			}
 		}.runTaskTimer(plouf, 1, 1);
 	}
