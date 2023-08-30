@@ -1,5 +1,6 @@
 package fr.lumin0u.plouf.util;
 
+import fr.worsewarn.cosmox.tools.utils.PlayerSkin;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
@@ -121,6 +122,11 @@ public class ItemBuilder
 		meta.setOwner(owner);
 		setItemMeta(meta);
 		return this;
+	}
+	
+	public ItemBuilder setSkullTexture(String texture) {
+		this.stack = PlayerSkin.itemFromTextureID(texture);// 45
+		return this;// 46
 	}
 	
 	public ItemBuilder setDisplayName(String displayname) {

@@ -22,7 +22,24 @@ public class UniqueCraftMenuListener implements Listener
 	
 	private void createMenu()
 	{
+		GameManager gm = Plouf.getInstance().getGameManager();
+		
 		menu = Bukkit.createInventory(null, 6*9, "Crafts uniques des joueurs");
+		
+		int i = 0;
+		for(PloufPlayer player : gm.getNonSpecPlayers().stream().sorted((p1, p2) -> Integer.compare(p2.getUniqueCrafts().size(), p1.getUniqueCrafts().size())).toList())
+		{
+			if(i == 9)
+				break;
+			
+			int count = player.getUniqueCrafts().size();
+			menu.setItem(i, new ItemBuilder(Material.PLAYER_HEAD)
+					.setHead(player.getName())
+					.setDisplayName(player.getName()).setLore("§6§l" + count + " §6crafts uniques", "§7Tous les items listés ci-dessous", "§7n'ont été craftés que par " + player.getName())
+					.build());
+			
+			i++;
+		}
 		
 		new BukkitRunnable() {
 			int t = 0;
@@ -45,10 +62,6 @@ public class UniqueCraftMenuListener implements Listener
 				break;
 			
 			int count = player.getUniqueCrafts().size();
-			menu.setItem(i, new ItemBuilder(Material.PLAYER_HEAD)
-					.setHead(player.getName())
-					.setDisplayName(player.getName()).setLore("§6§l" + count + " §6crafts uniques", "§7Tous les items listés ci-dessous", "§7n'ont été craftés que par " + player.getName())
-					.build());
 			
 			for(int j = 0; j < Math.min(5, count); j++)
 			{
