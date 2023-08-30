@@ -39,7 +39,7 @@ public class UniqueCraftMenuListener implements Listener
 		GameManager gm = Plouf.getInstance().getGameManager();
 		
 		int i = 0;
-		for(PloufPlayer player : gm.getPlayers().stream().sorted((p1, p2) -> Integer.compare(p2.getUniqueCrafts().size(), p1.getUniqueCrafts().size())).toList())
+		for(PloufPlayer player : gm.getNonSpecPlayers().stream().sorted((p1, p2) -> Integer.compare(p2.getUniqueCrafts().size(), p1.getUniqueCrafts().size())).toList())
 		{
 			if(i == 9)
 				break;

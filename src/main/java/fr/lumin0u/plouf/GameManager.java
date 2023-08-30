@@ -66,7 +66,7 @@ public class GameManager
 		return players.values().stream().filter(not(PloufPlayer::isSpectator)).toList();
 	}
 
-	public List<PloufPlayer> getPlayers() {
+	public List<PloufPlayer> getOnlinePlayers() {
 		return players.values().stream().filter(WrappedPlayer::isOnline).toList();
 	}
 	
@@ -85,7 +85,7 @@ public class GameManager
 		Chunk spawnChunk = map.getLocation("spawnpoint").getChunk();
 		
 		int i = 1;
-		for(PloufPlayer ploufPlayer : getPlayers())
+		for(PloufPlayer ploufPlayer : getOnlinePlayers())
 		{
 			if(!ploufPlayer.isSpectator())
 			{
