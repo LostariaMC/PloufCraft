@@ -151,7 +151,7 @@ public class GameManager
 					Material material = API.instance().getGameParameterBoolean(PLOUF_WOOD_DEACTIVATED) ? Items.getRandomNoWoodGiveableItem(itemRandom) : Items.getRandomGiveableItem(itemRandom);
 					if(!gaveWood && Items.isWood(material))
 						gaveWood = true;
-					ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Math.min(16, material.getMaxStackSize())));
+					ItemStack item = new ItemStack(material, 1 + itemRandom.nextInt(Items.isLog(material) ? 6 : Math.min(16, material.getMaxStackSize())));
 					getNonSpecPlayers().stream().filter(WrappedPlayer::isOnline).forEach(player ->
 					{
 						if(player.toBukkit().getInventory().firstEmpty() != -1)

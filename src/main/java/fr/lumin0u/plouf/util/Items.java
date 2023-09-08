@@ -85,4 +85,8 @@ public class Items
 	public static boolean isWood(Material material) {
 		return material.name().matches("(\\w+_PLANKS|\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM|.*HYPHAE)") || material == Material.BAMBOO_BLOCK || material == Material.STRIPPED_BAMBOO_BLOCK;
 	}
+	
+	public static boolean isLog(Material material) {
+		return material.name().matches("(\\w+_WOOD|\\w+_LOG|.*CRIMSON_STEM|.*WARPED_STEM|.*HYPHAE)") || material == Material.BAMBOO_BLOCK || material == Material.STRIPPED_BAMBOO_BLOCK;
+	}
 }
