@@ -17,8 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -31,9 +31,22 @@ public class CraftListener implements Listener
 {
 	private static final List<Material> WOODEN_TOOLS = List.of(Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL);
 	
+	private boolean isDropAction(InventoryAction action) {
+		return switch(action) {
+			case DROP_ONE_SLOT, DROP_ALL_SLOT -> true;
+			default -> false;
+		};
+	}
+	
 	@EventHandler
 	public void itemCraftEvent(CraftItemEvent event) {
 		GameManager gm = Plouf.getInstance().getGameManager();
+		
+		// check
+		if((isDropAction(event.getAction()) && event.getWhoClicked().getItemOnCursor().getType() != Material.AIR) || event.getAction() == InventoryAction.NOTHING) {
+			event.setCancelled(true);
+			return;
+		}
 		
 		if(gm.isStarted() && (event.getClick() != ClickType.NUMBER_KEY || event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) == null))
 		{
@@ -63,7 +76,7 @@ public class CraftListener implements Listener
 				}
 				
 				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK);
-				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 10);
+				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 1);
 				
 				FireworkMeta meta = fw.getFireworkMeta();
 				meta.addEffect(FireworkEffect.builder().withColor(Utils.choice(List.of(Color.BLUE, Color.LIME, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.WHITE, Color.AQUA, Color.FUCHSIA, Color.AQUA, Color.GREEN, Color.NAVY, Color.RED, Color.RED, Color.YELLOW, Color.TEAL))).build());
