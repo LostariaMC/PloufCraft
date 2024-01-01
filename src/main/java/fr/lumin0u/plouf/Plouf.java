@@ -42,7 +42,6 @@ public final class Plouf extends JavaPlugin
 	private Game game;
 	private static Plouf instance;
 	private ProtocolManager protocolManager;
-	private boolean craftsReady;
 	
 	private static long currentTick;
 	
@@ -58,7 +57,6 @@ public final class Plouf extends JavaPlugin
 			Items.buildGiveableItems();
 			long endTime = System.currentTimeMillis();
 			getLogger().info(String.format("Liste des items créée en %.3f secondes", (double) (endTime - startTime) / 1000));
-			craftsReady = true;
 		});
 		
 		protocolManager = ProtocolLibrary.getProtocolManager();
@@ -148,9 +146,5 @@ public final class Plouf extends JavaPlugin
 	
 	public static ProtocolManager getProtocolManager() {
 		return instance.protocolManager;
-	}
-	
-	public boolean isCraftsReady() {
-		return craftsReady;
 	}
 }
