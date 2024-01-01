@@ -33,8 +33,10 @@ public class CraftListener implements Listener
 	
 	private boolean isDropAction(InventoryAction action) {
 		return switch(action) {
-			case DROP_ONE_SLOT, DROP_ALL_SLOT -> true;
-			default -> false;
+			case DROP_ONE_SLOT, DROP_ALL_SLOT ->
+					true;
+			default ->
+					false;
 		};
 	}
 	
@@ -48,14 +50,12 @@ public class CraftListener implements Listener
 			return;
 		}
 		
-		if(gm.isStarted() && (event.getClick() != ClickType.NUMBER_KEY || event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) == null))
-		{
+		if(gm.isStarted() && (event.getClick() != ClickType.NUMBER_KEY || event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) == null)) {
 			PloufPlayer player = gm.getPlayer(event.getWhoClicked().getUniqueId());
 			
 			Material crafted = event.getRecipe().getResult().getType();
 			
-			if(!player.getCraftedItems().contains(crafted))
-			{
+			if(!player.getCraftedItems().contains(crafted)) {
 				player.addCraftedItem(crafted);
 				
 				if(crafted == Material.FURNACE) {
@@ -96,17 +96,14 @@ public class CraftListener implements Listener
 	}
 	
 	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event)
-	{
-		if(!PloufPlayer.of(event.getPlayer()).getPlacedBlocks().contains(event.getBlock()))
-		{
+	public void onBlockBreak(BlockBreakEvent event) {
+		if(!PloufPlayer.of(event.getPlayer()).getPlacedBlocks().contains(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event)
-	{
+	public void onBlockPlace(BlockPlaceEvent event) {
 		PloufPlayer.of(event.getPlayer()).getPlacedBlocks().add(event.getBlock());
 	}
 	
