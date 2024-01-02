@@ -4,10 +4,10 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.lumin0u.plouf.events.CosmoxListener;
 import fr.lumin0u.plouf.util.Achievements;
+import fr.lumin0u.plouf.util.I18n;
 import fr.lumin0u.plouf.util.ItemBuilder;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
-import fr.worsewarn.cosmox.api.achievements.Achievement;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.statistics.Statistic;
 import fr.worsewarn.cosmox.game.Game;
@@ -36,6 +36,8 @@ public final class Plouf extends JavaPlugin
 	public static final String PLOUF_UNIQUE_ITEMS_CRAFTED = "plouf_unique_items_crafted";
 	
 	public static final DefaultItemSlot PICKAXE_SLOT = new DefaultItemSlot("plouf_pickaxe", Items.DEFAULT_PICKAXE);
+	
+	public static final String GAME_IDENTIFIER = "ploufcraft";
 	
 	private GameManager gameManager;
 	private API api;
@@ -78,7 +80,7 @@ public final class Plouf extends JavaPlugin
 			}
 		});
 		
-		game = new Game("ploufcraft", "PloufCraft", ChatColor.of("#FF5050"), Material.CRAFTING_TABLE, null, 2, false, true,
+		game = new Game(GAME_IDENTIFIER, "PloufCraft", ChatColor.of("#FF5050"), Material.CRAFTING_TABLE, null, 2, false, true,
 				List.of(
 						new Statistic("Temps de jeu", GameVariables.TIME_PLAYED, true),
 						new Statistic("Parties jouées", GameVariables.GAMES_PLAYED),
@@ -107,15 +109,36 @@ public final class Plouf extends JavaPlugin
 		game.setGameAuthor("lumin0u");
 		game.setPreparationTime(5);
 		game.addParameter(new Parameter(PLOUF_ITEM_DELAY, "", 5, 0.25f, 20,
-				new ItemBuilder(Material.CLOCK).setDisplayName("§bDélai entre 2 items").addLore(List.of(" ", "§7Définir le délai entre", " ", "§e Valeur actuelle : §6%f §esecondes")).build(),
+				new ItemBuilder(Material.CLOCK)
+						.setDisplayName(I18n.interpretable("host_parameter_item_delay"))
+						.addLore(List.of(
+								" ",
+								"§7" + I18n.interpretable("host_parameter_item_delay_description"),
+								" ",
+								I18n.interpretable("host_parameter_item_delay_value")))
+						.build(),
 				List.of(1f, 0.5f, 0.25f), false, false));
 		
 		game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
-						new ItemBuilder(Material.OAK_LOG).setDisplayName("§bDésactivation du bois").addLore(List.of(" ", "§7Permet de désactiver le", "§7drop de bois (n'exclut que", "§7les planches et les buches, les", "§7crafts utilisant du bois sont", "§7toujours possible)", " ", "§e Actuellement : le bois n'est pas §6%b")).build(),
+						new ItemBuilder(Material.OAK_LOG)
+								.setDisplayName(I18n.interpretable("host_parameter_no_wood"))
+								.addLore(List.of(
+										" ",
+										"§7" + I18n.interpretable("host_parameter_no_wood_description"),
+										" ",
+										I18n.interpretable("host_parameter_no_wood_value")))
+								.build(),
 						false, false));
 		
 		game.addParameter(new Parameter(PLOUF_AUTO_REMOVE_NONINGREDIENTS, "", List.of("Désactivé", "Activé"),
-				new ItemBuilder(Material.STRUCTURE_VOID).setDisplayName("§bRetrait des non-ingrédients").addLore(List.of(" ", "§7Permet de retirer automatiquement", "§7les items craftés qui ne", "§7permettent pas de faire de crafts", " ", "§e Actuellement : §6%b")).build(),
+				new ItemBuilder(Material.STRUCTURE_VOID)
+						.setDisplayName(I18n.interpretable("host_parameter_remove_non_ingredients"))
+						.addLore(List.of(
+								" ",
+								"§7" + I18n.interpretable("host_parameter_remove_non_ingredients_description"),
+								" ",
+								I18n.interpretable("host_parameter_remove_non_ingredients_value")))
+						.build(),
 				false, false));
 		
 		API.instance().registerNewGame(game);

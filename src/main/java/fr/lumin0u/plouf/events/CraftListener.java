@@ -5,7 +5,6 @@ import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
 import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
-import fr.lumin0u.plouf.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -17,8 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -26,6 +25,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class CraftListener implements Listener
 {
@@ -39,6 +39,8 @@ public class CraftListener implements Listener
 					false;
 		};
 	}
+	
+	private static final List<Color> fireworkColors = List.of(Color.BLUE, Color.LIME, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.WHITE, Color.AQUA, Color.FUCHSIA, Color.AQUA, Color.GREEN, Color.NAVY, Color.RED, Color.RED, Color.YELLOW, Color.TEAL);
 	
 	@EventHandler
 	public void itemCraftEvent(CraftItemEvent event) {
@@ -79,7 +81,7 @@ public class CraftListener implements Listener
 				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 1);
 				
 				FireworkMeta meta = fw.getFireworkMeta();
-				meta.addEffect(FireworkEffect.builder().withColor(Utils.choice(List.of(Color.BLUE, Color.LIME, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.WHITE, Color.AQUA, Color.FUCHSIA, Color.AQUA, Color.GREEN, Color.NAVY, Color.RED, Color.RED, Color.YELLOW, Color.TEAL))).build());
+				meta.addEffect(FireworkEffect.builder().withColor(fireworkColors.get(new Random().nextInt(fireworkColors.size()))).build());
 				fw.setFireworkMeta(meta);
 				
 				gm.updateScoreboardScores();

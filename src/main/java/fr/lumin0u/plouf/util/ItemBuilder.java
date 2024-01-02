@@ -1,5 +1,6 @@
 package fr.lumin0u.plouf.util;
 
+import fr.worsewarn.cosmox.tools.items.ImmutableItemStack;
 import fr.worsewarn.cosmox.tools.utils.PlayerSkin;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;

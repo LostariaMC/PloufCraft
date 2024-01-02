@@ -1,6 +1,8 @@
 package fr.lumin0u.plouf.util;
 
 import com.google.common.collect.ImmutableSet;
+import fr.worsewarn.cosmox.tools.Utils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +22,10 @@ public class Items
 	private static ImmutableSet<Material> noWoodGiveableItems;
 	private static boolean finishedLoading = false;
 	
-	public static final ItemStack UNIQUE_CRAFTS_HEAD = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§eCrafts uniques des joueurs").setLore(" §e§l> §fClique §7pour voir les crafts uniques", "§7des autres joueurs").buildImmutable();
+	public static final I18nItemStack UNIQUE_CRAFTS_HEAD = new I18nItemStack(language -> new ItemBuilder(Material.PLAYER_HEAD)
+			.setDisplayName(I18n.translate(language, "menu_unique_crafts_title"))
+			.setLore(Utils.cutList(I18n.translate(language, "menu_unique_crafts_description"), 30, ChatColor.GRAY))
+			.buildImmutable());
 	
 	public static void buildGiveableItems() {
 		

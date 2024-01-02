@@ -1,12 +1,14 @@
 package fr.lumin0u.plouf;
 
 import fr.lumin0u.plouf.util.Achievements;
+import fr.lumin0u.plouf.util.I18n;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.scoreboard.CosmoxScoreboard;
 import fr.worsewarn.cosmox.game.GameVariables;
 import fr.worsewarn.cosmox.game.Phase;
+import fr.worsewarn.cosmox.tools.chat.MessageBuilder;
 import fr.worsewarn.cosmox.tools.chat.Messages;
 import fr.worsewarn.cosmox.tools.map.GameMap;
 import fr.worsewarn.cosmox.tools.utils.Pair;
@@ -141,7 +143,7 @@ public class GameManager
 				}
 				else {
 					if(waitingForItems) {
-						Bukkit.broadcastMessage("§cLa liste a été créée, début de la partie !");
+						Bukkit.broadcastMessage("§aLa liste a été créée, début de la partie !");
 						waitingForItems = false;
 					}
 					
@@ -183,10 +185,11 @@ public class GameManager
 						{
 							if(time == gameDuration - 20 * 10)
 							{
-								watcher.toBukkit().sendMessage(Plouf.getGame().getPrefix() + "§eIl reste 10 secondes !");
+								watcher.sendMessage(Plouf.getGame().getPrefix() + I18n.interpretable("ten_seconds_remaining"));
 								watcher.toBukkit().playSound(watcher.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_2, 1, 2);
 							}
-							watcher.toBukkit().showTitle(Title.title(Component.text("§e" + ((gameDuration - time)/20) + " secondes"), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
+							String title = new MessageBuilder(I18n.interpretable("title_time_remaining")).formatted((gameDuration - time)/20).toString(watcher);
+							watcher.toBukkit().showTitle(Title.title(Component.text(title), Component.empty(), Times.times(Ticks.duration(2), Ticks.duration(11), Ticks.duration(7))));
 							if((gameDuration - time)/20 < 7)
 								watcher.toBukkit().playNote(watcher.toBukkit().getLocation(), Instrument.BASS_GUITAR, Note.natural(1, Tone.values()[((gameDuration - time)/20) % 7]));
 						}
@@ -203,7 +206,8 @@ public class GameManager
 		
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
-			watcher.toCosmox().getScoreboard().updateLine(1, "§6| §eTemps restant §f━ §e" + (gameDuration - time) / 20 / 60 + ":" + String.format("%02d", ((gameDuration - time) / 20) % 60));
+			String s = new MessageBuilder(I18n.interpretable("scoreboard_time_remaining")).formatted((gameDuration - time) / 20 / 60 + ":" + String.format("%02d", ((gameDuration - time) / 20) % 60)).toString(watcher);
+			watcher.toCosmox().getScoreboard().updateLine(1, s);
 		}
 	}
 	
@@ -295,7 +299,7 @@ public class GameManager
 			player.calculateUniqueCrafts(getNonSpecPlayers());
 		}
 		
-		Bukkit.broadcastMessage(Plouf.getGame().getPrefix() + "§c§lLa partie est terminée !");
+		new MessageBuilder(Plouf.getGame().getPrefix() + I18n.interpretable("game_ended")).broadcast();
 		
 		new BukkitRunnable()
 		{
@@ -306,7 +310,7 @@ public class GameManager
 				
 				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) == maxPoints).forEach(player ->
 				{
-					player.toCosmox().addMolecules(5, "Victoire");
+					player.toCosmox().addMolecules(5, new MessageBuilder(I18n.interpretable("molecules_victory")).toString(player));
 					
 					player.toCosmox().addStatistic(GameVariables.WIN, 1);
 					
@@ -323,10 +327,10 @@ public class GameManager
 					}
 				});
 				plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
-				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, "Lot de consolation"));
+				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, new MessageBuilder(I18n.interpretable("molecules_consolation_prize")).toString(player)));
 				
 				getNonSpecPlayers().forEach(player -> {
-					player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, "Nombre de joueurs");
+					player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, new MessageBuilder(I18n.interpretable("molecules_nb_players")).toString(player));
 					
 					player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
 					
@@ -339,7 +343,7 @@ public class GameManager
 			}
 			
 			public void postPhaseEnd() {
-				getNonSpecPlayers().forEach(player -> player.ifOnline(pl -> pl.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD)));
+				getNonSpecPlayers().forEach(player -> player.ifOnline(pl -> pl.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD.get(player))));
 			}
 			
 			@Override
@@ -360,7 +364,7 @@ public class GameManager
 					player.toBukkit().updateInventory();
 					player.toBukkit().getWorld().spawnParticle(Particle.TOTEM, player.toBukkit().getLocation(), 30);
 					
-					player.toCosmox().addMolecules(0.5, "Craft unique");
+					player.toCosmox().addMolecules(0.5, new MessageBuilder(I18n.interpretable("molecules_unique_craft")).toString(player));
 					
 					player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				}
