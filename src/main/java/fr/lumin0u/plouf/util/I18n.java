@@ -11,11 +11,19 @@ import java.util.List;
 public class I18n
 {
 	public static String key(String simpleKey) {
-		return Plouf.GAME_IDENTIFIER + "." + simpleKey;
+		return key(Plouf.GAME_IDENTIFIER, simpleKey);
+	}
+	
+	public static String key(String file, String simpleKey) {
+		return file + "." + simpleKey;
 	}
 	
 	public static String interpretable(String simpleKey) {
-		return "@lang/" + key(simpleKey) + "/";
+		return interpretable(Plouf.GAME_IDENTIFIER, simpleKey);
+	}
+	
+	public static String interpretable(String file, String simpleKey) {
+		return "@lang/" + key(file, simpleKey) + "/";
 	}
 	
 	public static String translate(Language language, String simpleKey, Object... args) {

@@ -82,11 +82,11 @@ public final class Plouf extends JavaPlugin
 		
 		game = new Game(GAME_IDENTIFIER, "PloufCraft", ChatColor.of("#FF5050"), Material.CRAFTING_TABLE, null, 2, false, true,
 				List.of(
-						new Statistic("Temps de jeu", GameVariables.TIME_PLAYED, true),
-						new Statistic("Parties jouées", GameVariables.GAMES_PLAYED),
-						new Statistic("Victoires", GameVariables.WIN),
-						new Statistic("Items craftés", PLOUF_ITEMS_CRAFTED, true, true),
-						new Statistic("Items uniques craftés", PLOUF_UNIQUE_ITEMS_CRAFTED, true, true)
+						new Statistic(I18n.interpretable("main", "statistics_time_played"), GameVariables.TIME_PLAYED, true),
+						new Statistic(I18n.interpretable("main", "statistics_games_played"), GameVariables.GAMES_PLAYED),
+						new Statistic(I18n.interpretable("main", "statistics_win"), GameVariables.WIN),
+						new Statistic(I18n.interpretable("statistics_crafts"), PLOUF_ITEMS_CRAFTED, true, true),
+						new Statistic(I18n.interpretable("statistics_unique_crafts"), PLOUF_UNIQUE_ITEMS_CRAFTED, true, true)
 				),
 				List.of(Achievements.PLOUFCRAFT,
 						Achievements.CRAFT_FURNACE,
@@ -96,7 +96,7 @@ public final class Plouf extends JavaPlugin
 						Achievements.TOOL_CRAFTING,
 						Achievements.WIN_NO_WOOD,
 						Achievements.WIN_REMONTADA),
-				List.of("", "§7Craftez des trucs ! Vite !"),
+				List.of("", I18n.interpretable("game_description")),
 				List.of(new MapTemplate(MapType.NONE, List.of(
 						new MapLocation("name", MapLocationType.STRING),
 						new MapLocation("authors", MapLocationType.STRING),
