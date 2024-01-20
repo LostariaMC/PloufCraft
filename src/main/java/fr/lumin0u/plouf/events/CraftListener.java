@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
@@ -46,7 +47,6 @@ public class CraftListener implements Listener
 	public void itemCraftEvent(CraftItemEvent event) {
 		GameManager gm = Plouf.getInstance().getGameManager();
 		
-		// check
 		if((isDropAction(event.getAction()) && event.getWhoClicked().getItemOnCursor().getType() != Material.AIR) || event.getAction() == InventoryAction.NOTHING) {
 			event.setCancelled(true);
 			return;
