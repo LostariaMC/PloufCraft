@@ -13,5 +13,4 @@ public class Achievements
 	public static final Achievement PLAYER_INVENTORY_CRAFTING = new Achievement(3505, "Comment ?", Material.GRASS_BLOCK, "Réaliser un craft sans ouvrir la table de craft", 3500).setDescriptionVisibility(false, true);
 	public static final Achievement TOOL_CRAFTING = new Achievement(3506, "Ca, je sais faire", Material.WOODEN_PICKAXE, "Crafter tous les outils en bois", 3500);
 	public static final Achievement WIN_REMONTADA = new Achievement(3507, "Remontada", Material.RAW_GOLD, "Gagner après avoir eu 10 points de retard grâce aux crafts uniques", 3500);
-	// TODO remontada
 }
