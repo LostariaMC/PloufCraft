@@ -6,7 +6,6 @@ import fr.lumin0u.plouf.PloufPlayer;
 import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
 import fr.lumin0u.plouf.util.Utils;
-import fr.worsewarn.cosmox.API;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -15,25 +14,18 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import static fr.lumin0u.plouf.Plouf.PLOUF_AUTO_REMOVE_NONINGREDIENTS;
 
 public class CraftListener implements Listener
 {
@@ -43,7 +35,7 @@ public class CraftListener implements Listener
 	public void itemCraftEvent(CraftItemEvent event) {
 		GameManager gm = Plouf.getInstance().getGameManager();
 		
-		if(gm.isStarted())
+		if(gm.isStarted() && (event.getClick() != ClickType.NUMBER_KEY || event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) == null))
 		{
 			PloufPlayer player = gm.getPlayer(event.getWhoClicked().getUniqueId());
 			
