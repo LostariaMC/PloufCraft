@@ -8,8 +8,10 @@ import fr.worsewarn.cosmox.tools.world.NPC.ItemSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -23,6 +25,9 @@ public class PloufPlayer extends WrappedPlayer
 	
 	private boolean usedWood = false;
 	private boolean potentialRemontada = false;
+	
+	@NotNull
+	private WrappedPlayer spectatorTarget = WrappedPlayer.NULL;
 	
 	public PloufPlayer(UUID uid) {
 		super(uid);
@@ -96,5 +101,14 @@ public class PloufPlayer extends WrappedPlayer
 	
 	public void setPotentialRemontada(boolean potentialRemontada) {
 		this.potentialRemontada = potentialRemontada;
+	}
+	
+	public void setSpectatorTarget(@NotNull WrappedPlayer spectatorTarget) {
+		this.spectatorTarget = spectatorTarget;
+	}
+	
+	@NotNull
+	public WrappedPlayer getSpectatorTarget() {
+		return spectatorTarget;
 	}
 }
