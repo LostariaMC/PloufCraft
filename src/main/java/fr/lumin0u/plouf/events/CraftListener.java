@@ -5,6 +5,7 @@ import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
 import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
+import fr.worsewarn.cosmox.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -58,7 +60,10 @@ public class CraftListener implements Listener
 			Material crafted = event.getRecipe().getResult().getType();
 			
 			if(!player.getCraftedItems().contains(crafted)) {
-				player.addCraftedItem(crafted);
+				player.addCraftedItem(crafted,
+						Arrays.stream(event.getInventory().getContents())
+						.map(item -> item == null ? null : item.clone())
+						.toArray(ItemStack[]::new));
 				
 				if(crafted == Material.FURNACE) {
 					player.toCosmox().grantAdvancement(Achievements.CRAFT_FURNACE.getId());

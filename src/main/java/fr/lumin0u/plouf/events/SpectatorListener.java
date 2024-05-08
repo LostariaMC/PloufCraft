@@ -1,21 +1,19 @@
 package fr.lumin0u.plouf.events;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
-import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-public class InventoryListener implements Listener
+public class SpectatorListener implements Listener
 {
+	/*
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Bukkit.getOnlinePlayers().stream()
@@ -31,7 +29,7 @@ public class InventoryListener implements Listener
 							}, 1);
 				});
 	}
-	/*
+	
 	@EventHandler
 	public void onOpenInventory(InventoryOpenEvent event) {
 		Bukkit.getOnlinePlayers().stream()

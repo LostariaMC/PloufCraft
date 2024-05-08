@@ -379,7 +379,7 @@ public class GameManager
 				}
 				i++;
 			}
-		}.runTaskTimer(plouf, 60, 17);
+		}.runTaskTimer(plouf, 60, 15);
 	}
 	
 	public boolean isStarted() {
