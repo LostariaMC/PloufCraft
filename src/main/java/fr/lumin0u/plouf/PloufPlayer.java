@@ -63,7 +63,9 @@ public class PloufPlayer extends WrappedPlayer
 	}
 	
 	public int getPoints(int maxUnique) {
-		return craftedItems.size() + 2 * (maxUnique == -1 ? uniqueCrafts.size() : Math.min(maxUnique, uniqueCrafts.size()));
+		int n = (maxUnique == -1 ? uniqueCrafts.size() : Math.min(maxUnique, uniqueCrafts.size()));
+		return craftedItems.size()
+				+ (n * n) / 4 + n + (n % 2 == 1 ? 0 : 2); // calcul de 1 + 2 + 2 + 3 + 3 + 4 + ...
 	}
 	
 	public void calculateUniqueCrafts(List<PloufPlayer> others) {
