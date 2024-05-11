@@ -95,26 +95,6 @@ public class CraftListener implements Listener
 	}
 	
 	@EventHandler
-	public void onDamage(EntityDamageEvent event) {
-		GameManager gm = Plouf.getInstance().getGameManager();
-		
-		if(gm.isStarted())
-			event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event) {
-		if(!PloufPlayer.of(event.getPlayer()).getPlacedBlocks().contains(event.getBlock())) {
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event) {
-		PloufPlayer.of(event.getPlayer()).getPlacedBlocks().add(event.getBlock());
-	}
-	
-	@EventHandler
 	public void onRecipeDiscovery(PlayerRecipeDiscoverEvent event) {
 		event.setCancelled(true);
 	}
