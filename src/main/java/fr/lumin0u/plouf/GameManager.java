@@ -86,7 +86,7 @@ public class GameManager
 		
 		Chunk spawnChunk = map.getLocation("spawnpoint").getChunk();
 		
-		int i = 1;
+		int i = 0;
 		for(PloufPlayer ploufPlayer : getOnlinePlayers())
 		{
 			if(!ploufPlayer.isSpectator())
