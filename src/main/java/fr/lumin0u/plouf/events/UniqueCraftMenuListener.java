@@ -68,7 +68,7 @@ public class UniqueCraftMenuListener implements Listener
 				public void run() {
 					updateMenu(t++);
 				}
-			}.runTaskTimer(Plouf.getInstance(), 0, 10);
+			}.runTaskTimer(Plouf.getInstance(), 0, 20);
 			
 			menus.put(language, menu);
 		}
@@ -91,7 +91,7 @@ public class UniqueCraftMenuListener implements Listener
 				Material craft = player.getUniqueCrafts().get((count > 5 ? j + t : j) % count);
 				
 				for(Inventory inv : menus.values()) {
-					inv.setItem(i + 9 * (j + 1), new ItemStack(craft));
+					inv.setItem(i + 9 * (j + 1), new ItemBuilder(craft).addLore("§7§l> §7Voir le craft").build());
 				}
 			}
 			
