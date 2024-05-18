@@ -386,6 +386,10 @@ public class GameManager
 		return started;
 	}
 	
+	public void stop() {
+		time = gameDuration;
+	}
+	
 	public int getItemDelay() {
 		return (int) (API.instance().getGameParameterFloat(Plouf.PLOUF_ITEM_DELAY) * 20);
 	}

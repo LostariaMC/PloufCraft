@@ -4,3 +4,7 @@ main: fr.lumin0u.plouf.Plouf
 api-version: 1.17
 depend: [Cosmox]
 authors: [ lumin0u ]
+
+commands:
+  ploufstop:
+    usage: ""

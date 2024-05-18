@@ -18,7 +18,7 @@ import static fr.lumin0u.plouf.Plouf.PLOUF_AUTO_REMOVE_NONINGREDIENTS;
 public class PloufPlayer extends WrappedPlayer
 {
 	private final Map<Material, ItemStack[]> craftedItems = new HashMap<>();
-	private Set<Material> uniqueCrafts = new HashSet<>();
+	private List<Material> uniqueCrafts = new ArrayList<>();
 	private final Set<Block> placedBlocks = new HashSet<>();
 	
 	private boolean usedWood = false;
@@ -78,7 +78,7 @@ public class PloufPlayer extends WrappedPlayer
 	}
 	
 	public void calculateUniqueCrafts(List<PloufPlayer> others) {
-		uniqueCrafts = new HashSet<>(craftedItems.keySet());
+		uniqueCrafts = new ArrayList<>(craftedItems.keySet());
 		
 		for(PloufPlayer player : others)
 		{

@@ -57,7 +57,7 @@ public class CraftListener implements Listener
 		if(gm.isStarted() && (event.getClick() != ClickType.NUMBER_KEY || event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) == null)) {
 			PloufPlayer player = gm.getPlayer(event.getWhoClicked().getUniqueId());
 			
-			Material crafted = event.getRecipe().getResult().getType();
+			Material crafted = event.getInventory().getResult().getType();
 			
 			if(!player.getCraftedItems().contains(crafted)) {
 				player.addCraftedItem(crafted,

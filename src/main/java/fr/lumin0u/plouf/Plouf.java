@@ -21,7 +21,10 @@ import fr.worsewarn.cosmox.tools.map.MapType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +53,8 @@ public final class Plouf extends JavaPlugin
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		getCommand("ploufstop").setExecutor(this);
 		
 		Bukkit.getScheduler().runTaskTimer(API.instance(), () -> currentTick++, 1, 1);
 		
@@ -169,5 +174,13 @@ public final class Plouf extends JavaPlugin
 	
 	public static ProtocolManager getProtocolManager() {
 		return instance.protocolManager;
+	}
+	
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if(command.getName().equalsIgnoreCase("ploufstop") && sender.isOp()) {
+			getGameManager().stop();
+		}
+		return super.onCommand(sender, command, label, args);
 	}
 }
