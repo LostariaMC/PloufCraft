@@ -55,15 +55,6 @@ public class GameManager
 		return players.get(uid);
 	}
 	
-	/*public static void copyChunk(Chunk chunk1, Chunk chunk2) {
-		net.minecraft.world.level.chunk.Chunk nmsChunk1 = NMSUtils.getHandle(chunk1);
-		net.minecraft.world.level.chunk.Chunk nmsChunk2 = NMSUtils.getHandle(chunk2);
-		
-		ChunkSection[] sections1 = NMSUtils.Chunk_getChunkSections(nmsChunk1);
-		ChunkSection[] sections2 = NMSUtils.Chunk_getChunkSections(nmsChunk2);
-		
-		System.arraycopy(Arrays.stream(sections1).map(cs -> cs).toArray(ChunkSection[]::new), 0, sections2, 0, sections1.length);
-	}*/
 	public List<PloufPlayer> getNonSpecPlayers() {
 		return players.values().stream().filter(not(PloufPlayer::isSpectator)).toList();
 	}
@@ -81,8 +72,6 @@ public class GameManager
 		
 		for(Player player : Bukkit.getOnlinePlayers())
 			getPlayer(player.getUniqueId());
-		
-		int playerCount = (int) players.values().stream().filter(not(PloufPlayer::isSpectator)).filter(WrappedPlayer::isOnline).count();
 		
 		Chunk spawnChunk = map.getLocation("spawnpoint").getChunk();
 		
