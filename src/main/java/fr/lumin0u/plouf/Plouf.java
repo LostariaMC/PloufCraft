@@ -37,7 +37,8 @@ public final class Plouf extends JavaPlugin
 	
 	public static final String PLOUF_ITEMS_CRAFTED = "plouf_items_crafted";
 	public static final String PLOUF_UNIQUE_ITEMS_CRAFTED = "plouf_unique_items_crafted";
-	
+	public static final String PLOUF_POINTS = "plouf_points";
+
 	public static final DefaultItemSlot PICKAXE_SLOT = new DefaultItemSlot("plouf_pickaxe", Items.DEFAULT_PICKAXE);
 	
 	public static final String GAME_IDENTIFIER = "ploufcraft";
@@ -91,7 +92,8 @@ public final class Plouf extends JavaPlugin
 						new Statistic(I18n.interpretable("main", "statistics_games_played"), GameVariables.GAMES_PLAYED),
 						new Statistic(I18n.interpretable("main", "statistics_win"), GameVariables.WIN),
 						new Statistic(I18n.interpretable("statistics_crafts"), PLOUF_ITEMS_CRAFTED, true, true),
-						new Statistic(I18n.interpretable("statistics_unique_crafts"), PLOUF_UNIQUE_ITEMS_CRAFTED, true, true)
+						new Statistic(I18n.interpretable("statistics_unique_crafts"), PLOUF_UNIQUE_ITEMS_CRAFTED, true, true),
+						new Statistic(I18n.interpretable("statistics_points"), PLOUF_POINTS, true, true)
 				),
 				List.of(Achievements.PLOUFCRAFT,
 						Achievements.CRAFT_FURNACE,

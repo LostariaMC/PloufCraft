@@ -319,10 +319,11 @@ public class GameManager
 				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, new MessageBuilder(I18n.interpretable("molecules_consolation_prize")).toString(player)));
 				
 				getNonSpecPlayers().forEach(player -> {
-					player.toCosmox().addMolecules(getNonSpecPlayers().size() / 2, new MessageBuilder(I18n.interpretable("molecules_nb_players")).toString(player));
+					player.toCosmox().addMolecules((double) getNonSpecPlayers().size() / 2, new MessageBuilder(I18n.interpretable("molecules_nb_players")).toString(player));
 					
 					player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
-					
+
+					player.toCosmox().addStatistic(Plouf.PLOUF_POINTS, player.getPoints(-1));
 					player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());
 					player.toCosmox().addStatistic(Plouf.PLOUF_UNIQUE_ITEMS_CRAFTED, player.getUniqueCrafts().size());
 					player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
