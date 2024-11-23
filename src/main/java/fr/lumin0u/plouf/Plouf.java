@@ -145,6 +145,8 @@ public final class Plouf extends JavaPlugin
 								I18n.interpretable("host_parameter_remove_non_ingredients_value")))
 						.build(),
 				false, false));
+		Parameter maps = new Parameter("Maps", "", 0, 0, 0, new ItemBuilder(Material.PAPER).setDisplayName("§6Cartes").setLore(List.of(" ", "§7Enlève ici les cartes que tu n'aimes pas", "§7pour pouvoir exploser les joueurs et gagner")).build(), List.of(0F), false, true);
+		game.addParameter(maps);
 		
 		API.instance().registerNewGame(game);
 		
