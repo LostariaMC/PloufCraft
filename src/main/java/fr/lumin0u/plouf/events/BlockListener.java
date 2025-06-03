@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -36,10 +37,18 @@ public class BlockListener implements Listener
 	}
 	
 	private final Set<Material> forbiddenInteraction = Set.of(Material.FLOWER_POT, Material.DECORATED_POT, Material.CHISELED_BOOKSHELF, Material.ENDER_CHEST, Material.STONECUTTER);
-	
+
 	@EventHandler
 	public void onPlayerEditBlock(PlayerInteractEvent event) {
 		if(event.hasBlock() && forbiddenInteraction.contains(event.getClickedBlock().getType())) {
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler
+	public void onPhysics(BlockPhysicsEvent event) {
+		if(Plouf.getInstance().getGameManager().getNonSpecPlayers().stream()
+				.flatMap(p -> p.getPlacedBlocks().stream())
+				.noneMatch(event.getBlock()::equals)) {
 			event.setCancelled(true);
 		}
 	}
