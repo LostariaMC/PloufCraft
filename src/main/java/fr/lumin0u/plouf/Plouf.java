@@ -99,6 +99,7 @@ public final class Plouf extends JavaPlugin
 						Achievements.WIN_NO_WOOD,
 						Achievements.WIN_REMONTADA),
 				I18n.interpretable("game_description"),
+
 				List.of(new MapTemplate(GameMap.Type.A, List.of(
 						new MapTemplateElement("name", MapTemplateElementType.STRING),
 						new MapTemplateElement("authors", MapTemplateElementType.STRING),
@@ -121,7 +122,7 @@ public final class Plouf extends JavaPlugin
 						.build(),
 				List.of(1f, 0.5f, 0.25f), false, false));
 
-		game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
+		/*game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
 						new ItemBuilder(Material.OAK_LOG)
 								.setDisplayName(I18n.interpretable("host_parameter_no_wood"))
 								.addLore(List.of(
@@ -141,7 +142,7 @@ public final class Plouf extends JavaPlugin
 								" ",
 								I18n.interpretable("host_parameter_remove_non_ingredients_value")))
 						.build(),
-				false, false));
+				false, false));*/
 		Parameter maps = new Parameter("Maps", "", 0, 0, 0, new ItemBuilder(Material.PAPER).setDisplayName("§6Cartes").setLore(List.of(" ", "§7Enlève ici les cartes que tu n'aimes pas", "§7pour pouvoir exploser les joueurs et gagner")).build(), List.of(0F), false, true);
 		game.addParameter(maps);
 
