@@ -1,0 +1,63 @@
+name: Build and Push to Harbor
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set Docker tag based on branch
+        id: set_tag
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "tag=prod" >> $GITHUB_OUTPUT
+          else
+            echo "tag=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Harbor (for pushing image)
+        run: echo '${{ secrets.HARBOR_PASSWORD }}' | docker login harbor.lostaria.fr -u '${{ secrets.HARBOR_USERNAME }}' --password-stdin
+
+      - name: Pull Cosmox image
+        run: docker pull harbor.lostaria.fr/lostaria/plugins/cosmox:${{ steps.set_tag.outputs.tag }}
+
+      - name: Extract cosmox.jar from image
+        run: |
+          id=$(docker create harbor.lostaria.fr/lostaria/plugins/cosmox:${{ steps.set_tag.outputs.tag }})
+          docker cp "$id:/cosmox.jar" cosmox.jar
+          docker rm "$id"
+
+      - name: Install cosmox.jar in local Maven repo
+        run: |
+          mvn install:install-file \
+            -Dfile=cosmox.jar \
+            -DgroupId=fr.worsewarn.cosmox \
+            -DartifactId=Cosmox \
+            -Dversion=1 \
+            -Dpackaging=jar
+
+      - name: Build JAR
+        run: mvn clean package -DskipTests
+
+      - name: Build Docker image
+        run: docker build -t harbor.lostaria.fr/lostaria/plugins/ploufcraft:${{ steps.set_tag.outputs.tag }} .
+
+      - name: Login to Harbor (for pushing image)
+        run: echo '${{ secrets.HARBOR_PASSWORD }}' | docker login harbor.lostaria.fr -u '${{ secrets.HARBOR_USERNAME }}' --password-stdin
+
+      - name: Push image
+        run: docker push harbor.lostaria.fr/lostaria/plugins/ploufcraft:${{ steps.set_tag.outputs.tag }}
