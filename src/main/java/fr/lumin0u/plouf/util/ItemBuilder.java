@@ -6,6 +6,8 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -103,7 +105,7 @@ public class ItemBuilder
 	
 	public ItemBuilder setBannerColor(DyeColor color) {
 		BannerMeta meta = (BannerMeta) stack.getItemMeta();
-		meta.setBaseColor(color);
+		meta.setPattern(0, new Pattern(color, PatternType.BASE));
 		setItemMeta(meta);
 		return this;
 	}

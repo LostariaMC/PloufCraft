@@ -6,11 +6,9 @@ import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.scoreboard.CosmoxScoreboard;
-import fr.worsewarn.cosmox.game.GameVariables;
-import fr.worsewarn.cosmox.game.Phase;
+import fr.worsewarn.cosmox.api.server.phase.GamePhase;
 import fr.worsewarn.cosmox.tools.chat.MessageBuilder;
-import fr.worsewarn.cosmox.tools.chat.Messages;
-import fr.worsewarn.cosmox.tools.map.GameMap;
+import fr.worsewarn.cosmox.tools.map.game.GameMap;
 import fr.worsewarn.cosmox.tools.utils.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -26,7 +24,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -64,7 +61,7 @@ public class GameManager
 	}
 	
 	public Location getSpawnpoint(int i) {
-		return map.getLocation("spawnpoint").clone().add(Integer.parseInt(map.getStr("spawnoffset")) * i, 0, 0);
+		return map.getLocation("spawnpoint").clone().add(Integer.parseInt(map.getText("spawnoffset")) * i, 0, 0);
 	}
 	
 	public void onCosmoxStart(GameMap map) {
@@ -85,7 +82,7 @@ public class GameManager
 				i++;
 
 				ploufPlayer.toBukkit().getInventory().clear();
-				ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, PotionEffect.INFINITE_DURATION, 50, false, false));
+				ploufPlayer.toBukkit().addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 50, false, false));
 				ploufPlayer.toBukkit().setGameMode(GameMode.SURVIVAL);
 
 			}
@@ -108,7 +105,7 @@ public class GameManager
 	public void start() {
 		resetScoreboard();
 		
-		API.instance().getManager().setPhase(Phase.GAME);
+		API.instance().getManager().setPhase(GamePhase.PLAYING);
 		
 		started = true;
 		
@@ -264,7 +261,7 @@ public class GameManager
 		updateScoreboardTime();
 		updateScoreboardScores(true, 0);
 		
-		((World)map.getWorld()).getEntitiesByClass(Item.class).forEach(Entity::remove);
+		Plouf.getWorld().getEntitiesByClass(Item.class).forEach(Entity::remove);
 		
 		int maxPoints = getNonSpecPlayers().stream().mapToInt(player -> player.getPoints(0)).max().orElse(0);
 		
@@ -278,7 +275,7 @@ public class GameManager
 				
 				player.toBukkit().playSound(player.toBukkit().getLocation(), Sound.ITEM_GOAT_HORN_SOUND_4, 1, 1.6f);
 				
-				player.toBukkit().removePotionEffect(PotionEffectType.FAST_DIGGING);
+				player.toBukkit().removePotionEffect(PotionEffectType.HASTE);
 				
 				if(player.getPoints(0) <= maxPoints - 10) {
 					player.setPotentialRemontada(true);
@@ -289,6 +286,8 @@ public class GameManager
 		}
 		
 		new MessageBuilder(Plouf.getGame().getPrefix() + I18n.interpretable("game_ended")).broadcast();
+
+		List<UUID> winners = new ArrayList<>();
 		
 		new BukkitRunnable()
 		{
@@ -299,41 +298,35 @@ public class GameManager
 				
 				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) == maxPoints).forEach(player ->
 				{
-					player.toCosmox().addMolecules(5, new MessageBuilder(I18n.interpretable("molecules_victory")).toString(player));
-					
-					player.toCosmox().addStatistic(GameVariables.WIN, 1);
-					
-					plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_WIN.formatted(player.getName()));
-					
+					player.toCosmox().addMolecules(5, I18n.interpretable("molecules_victory"));
+
+					winners.add(player.getUniqueId());
+
 					if(player.getUniqueCrafts().isEmpty()) {
-						player.toCosmox().grantAdvancement(Achievements.WIN_NO_UNIQUE.getId());
+						player.toCosmox().grantAchievement(Achievements.WIN_NO_UNIQUE.getIdentifier());
 					}
 					if(!player.didUseWood() && gaveWood) {
-						player.toCosmox().grantAdvancement(Achievements.WIN_NO_WOOD.getId());
+						player.toCosmox().grantAchievement(Achievements.WIN_NO_WOOD.getIdentifier());
 					}
 					if(player.isPotentialRemontada()) {
-						player.toCosmox().grantAdvancement(Achievements.WIN_REMONTADA.getId());
+						player.toCosmox().grantAchievement(Achievements.WIN_REMONTADA.getIdentifier());
 					}
 				});
-				plouf.getAPI().getManager().getGame().addToResume(Messages.SUMMARY_TIME.formatted(new SimpleDateFormat("mm':'ss").format(new Date(gameDuration * 50))));
-				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, new MessageBuilder(I18n.interpretable("molecules_consolation_prize")).toString(player)));
+				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, I18n.interpretable("molecules_consolation_prize")));
 				
 				getNonSpecPlayers().forEach(player -> {
-					player.toCosmox().addMolecules((double) getNonSpecPlayers().size() / 2, new MessageBuilder(I18n.interpretable("molecules_nb_players")).toString(player));
-					
-					player.toCosmox().addStatistic(GameVariables.GAMES_PLAYED, 1);
+					player.toCosmox().addMolecules((double) getNonSpecPlayers().size() / 2, I18n.interpretable("molecules_nb_players"));
 
 					player.toCosmox().addStatistic(Plouf.PLOUF_POINTS, player.getPoints(-1));
 					player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());
 					player.toCosmox().addStatistic(Plouf.PLOUF_UNIQUE_ITEMS_CRAFTED, player.getUniqueCrafts().size());
-					player.toCosmox().addStatistic(GameVariables.TIME_PLAYED, gameDuration / 20);
 				});
 				
 				updateScoreboardScores(true, -1);
 			}
 			
 			public void postPhaseEnd() {
-				getNonSpecPlayers().forEach(player -> player.ifOnline(pl -> pl.toBukkit().getInventory().setItem(0, Items.UNIQUE_CRAFTS_HEAD.get(player))));
+				getNonSpecPlayers().forEach(player -> player.ifOnline(pl -> Items.UNIQUE_CRAFTS_HEAD.give(pl.toCosmox(), 0)));
 			}
 			
 			@Override
@@ -352,7 +345,7 @@ public class GameManager
 					IntStream.range(0, 9).forEach(j -> player.toBukkit().getInventory().setItem(j, new ItemStack(player.getUniqueCrafts().get(i))));
 					player.toBukkit().getInventory().setItem(i+9, new ItemStack(player.getUniqueCrafts().get(i)));
 					player.toBukkit().updateInventory();
-					player.toBukkit().getWorld().spawnParticle(Particle.TOTEM, player.toBukkit().getLocation(), 30);
+					player.toBukkit().getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, player.toBukkit().getLocation(), 30);
 					
 					player.toCosmox().addMolecules(0.5, new MessageBuilder(I18n.interpretable("molecules_unique_craft")).toString(player));
 					
@@ -363,7 +356,7 @@ public class GameManager
 				{
 					prePhaseEnd();
 					cancel();
-					API.instance().getManager().setPhase(Phase.END);
+					API.instance().getManager().endGame(fr.worsewarn.cosmox.game.manager.GameManager.Winner.player(winners.toArray(UUID[]::new)));
 					
 					Bukkit.getScheduler().runTaskLater(plouf, this::postPhaseEnd, 20);
 				}

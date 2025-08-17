@@ -1,10 +1,14 @@
 package fr.lumin0u.plouf.util;
 
 import com.google.common.collect.ImmutableSet;
-import fr.worsewarn.cosmox.tools.Utils;
-import net.md_5.bungee.api.ChatColor;
+import fr.lumin0u.plouf.events.UniqueCraftMenuListener;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
+import fr.worsewarn.cosmox.tools.items.inventory.actions.InteractAction;
+import fr.worsewarn.cosmox.tools.items.inventory.items.InteractItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -22,10 +26,17 @@ public class Items
 	private static ImmutableSet<Material> noWoodGiveableItems;
 	private static boolean finishedLoading = false;
 	
-	public static final I18nItemStack UNIQUE_CRAFTS_HEAD = new I18nItemStack(language -> new ItemBuilder(Material.PLAYER_HEAD)
-			.setDisplayName(I18n.translate(language, "menu_unique_crafts_title"))
-			.setLore(Utils.cutList(I18n.translate(language, "menu_unique_crafts_description"), 30, ChatColor.GRAY))
-			.buildImmutable());
+	public static final InteractItem UNIQUE_CRAFTS_HEAD = new InteractItem("unique_crafts_head", new fr.worsewarn.cosmox.tools.items.ItemBuilder(Material.PLAYER_HEAD)
+			.setDisplayName(I18n.interpretable("menu_unique_crafts_title"))
+			.setLore(I18n.interpretable("menu_unique_crafts_description")))
+			.addInteractAction(new InteractAction() {
+				@Override
+				public void execute(Player player, Action action) {
+					if(action.isRightClick()) {
+						UniqueCraftMenuListener.openMenu(WrappedPlayer.of(player));
+					}
+				}
+			});
 	
 	public static void buildGiveableItems() {
 		

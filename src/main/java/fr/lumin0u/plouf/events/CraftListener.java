@@ -5,7 +5,6 @@ import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
 import fr.lumin0u.plouf.util.Achievements;
 import fr.lumin0u.plouf.util.Items;
-import fr.worsewarn.cosmox.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -14,14 +13,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
-import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -66,23 +61,23 @@ public class CraftListener implements Listener
 						.toArray(ItemStack[]::new));
 				
 				if(crafted == Material.FURNACE) {
-					player.toCosmox().grantAdvancement(Achievements.CRAFT_FURNACE.getId());
+					player.toCosmox().grantAchievement(Achievements.CRAFT_FURNACE.getIdentifier());
 				}
 				if(crafted == Material.CRAFTING_TABLE) {
-					player.toCosmox().grantAdvancement(Achievements.CRAFT_WORKBENCH.getId());
+					player.toCosmox().grantAchievement(Achievements.CRAFT_WORKBENCH.getIdentifier());
 				}
 				if(player.getCraftedItems().containsAll(WOODEN_TOOLS)) {
-					player.toCosmox().grantAdvancement(Achievements.TOOL_CRAFTING.getId());
+					player.toCosmox().grantAchievement(Achievements.TOOL_CRAFTING.getIdentifier());
 				}
 				if(event.getInventory().getMatrix().length == 4) {
-					player.toCosmox().grantAdvancement(Achievements.PLAYER_INVENTORY_CRAFTING.getId());
+					player.toCosmox().grantAchievement(Achievements.PLAYER_INVENTORY_CRAFTING.getIdentifier());
 				}
 				
 				if(!player.didUseWood() && Arrays.stream(event.getInventory().getMatrix()).filter(Objects::nonNull).map(ItemStack::getType).anyMatch(Items::isWood)) {
 					player.setUsedWood(true);
 				}
 				
-				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK);
+				Firework fw = (Firework) player.toBukkit().getWorld().spawnEntity(player.toBukkit().getEyeLocation(), EntityType.FIREWORK_ROCKET);
 				Bukkit.getScheduler().runTaskLater(Plouf.getInstance(), fw::detonate, 1);
 				
 				FireworkMeta meta = fw.getFireworkMeta();

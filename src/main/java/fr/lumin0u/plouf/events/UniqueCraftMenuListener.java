@@ -5,25 +5,21 @@ import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
 import fr.lumin0u.plouf.util.I18n;
 import fr.lumin0u.plouf.util.ItemBuilder;
-import fr.lumin0u.plouf.util.Items;
-import fr.worsewarn.cosmox.api.languages.Language;
-import fr.worsewarn.cosmox.tools.Utils;
+import fr.worsewarn.cosmox.api.players.WrappedPlayer;
+import fr.worsewarn.cosmox.tools.Language;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +28,13 @@ public class UniqueCraftMenuListener implements Listener
 {
 	private Map<Language, Inventory> menus;
 	private List<PloufPlayer> sortedPlayers;
-	
+
+	private static UniqueCraftMenuListener instance;
+
+	public UniqueCraftMenuListener() {
+		instance = this;
+	}
+
 	private void createMenus()
 	{
 		GameManager gm = Plouf.getInstance().getGameManager();
@@ -42,7 +44,7 @@ public class UniqueCraftMenuListener implements Listener
 		menus = new HashMap<>(Language.values().length);
 		
 		for(Language language : Language.values()) {
-			Inventory menu = Bukkit.createInventory(null, 6*9, Component.text(ChatColor.stripColor(I18n.translate(language, "menu_unique_crafts_title"))));
+			Inventory menu = Bukkit.createInventory(null, 6*9, I18n.translate(language, "menu_unique_crafts_title", TagResolver.empty()));
 			
 			int i = 0;
 			for(PloufPlayer player : sortedPlayers)
@@ -51,11 +53,12 @@ public class UniqueCraftMenuListener implements Listener
 					break;
 				
 				int count = player.getUniqueCrafts().size();
-				menu.setItem(i, new ItemBuilder(Material.PLAYER_HEAD)
+				menu.setItem(i, new fr.worsewarn.cosmox.tools.items.ItemBuilder(Material.PLAYER_HEAD)
 						.setHead(player.getName())
 						.setDisplayName(player.getName())
-						.addLore(I18n.translate(language, "item_unique_crafts_description1", count))
-						.addLore(Utils.cutList(I18n.translate(language, "item_unique_crafts_description2", player.getName()), 30, ChatColor.GRAY))
+						.addLore(I18n.interpretable("item_unique_crafts_description1"))
+						.addLore(I18n.interpretable("item_unique_crafts_description2"))
+						.translate(language, TagResolver.resolver("nb_crafts", Tag.inserting(Component.text(count))), TagResolver.resolver("player", Tag.inserting(Component.text(player.getName()))))
 						.build());
 				
 				i++;
@@ -99,21 +102,12 @@ public class UniqueCraftMenuListener implements Listener
 			i++;
 		}
 	}
-	
-	@EventHandler
-	public void onInteract(PlayerInteractEvent event)
-	{
-		if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-		{
-			if(Items.UNIQUE_CRAFTS_HEAD.isSimilar(event.getItem()))
-			{
-				if(menus == null)
-					createMenus();
-				
-				PloufPlayer player = PloufPlayer.of(event.getPlayer());
-				player.toBukkit().openInventory(menus.get(player.toCosmox().getRedisPlayer().getLanguage()));
-			}
-		}
+
+	public static void openMenu(WrappedPlayer player) {
+		if(instance.menus == null)
+			instance.createMenus();
+
+		player.toBukkit().openInventory(instance.menus.get(player.toCosmox().getRedisPlayer().getLanguage()));
 	}
 	
 	@EventHandler

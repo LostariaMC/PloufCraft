@@ -22,9 +22,11 @@ public class CosmoxListener implements Listener
 
 		if(API.instance().getManager().getPhase().getState() == 0) return;
 
-		Player player = event.getPlayer();
+		Player player = event.getCosmoxPlayer().getPlayer();
 		player.setGameMode(GameMode.SPECTATOR);
-		if(Bukkit.getOnlinePlayers().size()>1) player.teleport(Bukkit.getOnlinePlayers().stream().filter(all -> all != player).toList().get(0));
+		if(Bukkit.getOnlinePlayers().size() > 1) {
+			player.teleport(Bukkit.getOnlinePlayers().stream().filter(all -> all != player).toList().get(0));
+		}
 
 		Plouf.getInstance().getGameManager().resetScoreboard(WrappedPlayer.of(player));
 	}

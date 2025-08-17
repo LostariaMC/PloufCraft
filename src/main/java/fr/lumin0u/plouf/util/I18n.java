@@ -1,12 +1,10 @@
 package fr.lumin0u.plouf.util;
 
 import fr.lumin0u.plouf.Plouf;
-import fr.worsewarn.cosmox.api.languages.Language;
-import fr.worsewarn.cosmox.api.languages.LanguageManager;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import fr.worsewarn.cosmox.api.apis.Gallery;
+import fr.worsewarn.cosmox.tools.Language;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 public class I18n
 {
@@ -25,11 +23,11 @@ public class I18n
 	public static String interpretable(String file, String simpleKey) {
 		return "@lang/" + key(file, simpleKey) + "/";
 	}
-	
-	public static String translate(Language language, String simpleKey, Object... args) {
-		return LanguageManager.getInstance().translate(key(simpleKey), language).formatted(args);
+
+	public static Component translate(Language language, String simpleKey, TagResolver resolver) {
+		return Gallery.translate(Plouf.GAME_IDENTIFIER, language, simpleKey, resolver);
 	}
-	
+
 	/*
 	public static List<String> concatStrings(Object... things) {
 		List<String> list = new ArrayList<>();

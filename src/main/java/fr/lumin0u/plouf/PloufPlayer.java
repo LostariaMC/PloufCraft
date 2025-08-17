@@ -3,7 +3,7 @@ package fr.lumin0u.plouf;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
-import fr.worsewarn.cosmox.game.teams.Team;
+import fr.worsewarn.cosmox.game.configuration.teams.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,7 +52,7 @@ public class PloufPlayer extends WrappedPlayer
 	}
 	
 	public boolean isSpectator() {
-		return toCosmox().getTeam().equals(Team.SPEC);
+		return toCosmox().getTeam().equals(Team.SPECTATOR);
 	}
 	
 	public Set<Material> getCraftedItems() {
