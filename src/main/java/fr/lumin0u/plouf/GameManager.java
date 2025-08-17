@@ -7,10 +7,12 @@ import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.scoreboard.CosmoxScoreboard;
 import fr.worsewarn.cosmox.api.server.phase.GamePhase;
+import fr.worsewarn.cosmox.tools.Utils;
 import fr.worsewarn.cosmox.tools.chat.MessageBuilder;
 import fr.worsewarn.cosmox.tools.map.game.GameMap;
 import fr.worsewarn.cosmox.tools.utils.Pair;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
@@ -123,13 +125,13 @@ public class GameManager
 				
 				if(!Items.isFinishedLoading()) {
 					if(!waitingForItems) {
-						Bukkit.broadcastMessage("§cLa liste des items n'a pas encore été complètement construite, veuillez patientez pendant sa création. Si cela prend trop de temps, merci de contacter un responsable");
+                        Utils.broadcast(Component.text("<red>La liste des items n'a pas encore été complètement construite, veuillez patientez pendant sa création. Si cela prend trop de temps, merci de contacter un responsable"));
 						waitingForItems = true;
 					}
 				}
 				else {
 					if(waitingForItems) {
-						Bukkit.broadcastMessage("§aLa liste a été créée, début de la partie !");
+                        Utils.broadcast(Component.text("<green>La liste a été créée, début de la partie !"));
 						waitingForItems = false;
 					}
 					
@@ -210,7 +212,7 @@ public class GameManager
 		
 		Comparator<PloufPlayer> comparator = (p1, p2) -> Integer.compare(p2.getPoints(maxUnique), p1.getPoints(maxUnique));
 		
-		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add(new Pair<>(player, "§7" + player.getName() + ": §f" + player.getPoints(maxUnique))));
+		(sorted ? players.stream().sorted(comparator) : players.stream()).forEach(player -> lines.add(new Pair<>(player, "<gray>" + player.getName() + ": <white>" + player.getPoints(maxUnique))));
 		
 		for(WrappedPlayer watcher : WrappedPlayer.of(Bukkit.getOnlinePlayers()))
 		{
@@ -240,17 +242,17 @@ public class GameManager
 
 		CosmoxScoreboard scoreboard = new CosmoxScoreboard(watcher.toBukkit());
 
-		scoreboard.updateTitle("§f§lPLOUFCRAFT");
-		scoreboard.updateLine(0, "§0");
-		scoreboard.updateLine(1, "§7§l???");
-		scoreboard.updateLine(2, "§1");
+		scoreboard.updateTitle(Component.text("<white><bold>PLOUFCRAFT"));
+		scoreboard.updateLine(0, Component.text("<black>"));
+		scoreboard.updateLine(1, Component.text("<gray><bold>???"));
+		scoreboard.updateLine(2, Component.text("<aqua>"));
 
 		for(int i = 0; i < getNonSpecPlayers().size(); i++)
 		{
-			scoreboard.updateLine(Math.min(18, i + 3), "§7§l???");
+			scoreboard.updateLine(Math.min(18, i + 3), Component.text("<gray><bold>???"));
 		}
-		scoreboard.updateLine(Math.min(19, getNonSpecPlayers().size() + 3), "§2");
-		scoreboard.updateLine(Math.min(20, getNonSpecPlayers().size() + 4), "§3");
+		scoreboard.updateLine(Math.min(19, getNonSpecPlayers().size() + 3), Component.text("<aqua>"));
+		scoreboard.updateLine(Math.min(20, getNonSpecPlayers().size() + 4), Component.text("<gold>"));
 
 		watcher.toCosmox().setScoreboard(scoreboard);
 	}

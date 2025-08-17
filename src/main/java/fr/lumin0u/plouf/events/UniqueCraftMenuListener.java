@@ -92,7 +92,7 @@ public class UniqueCraftMenuListener implements Listener
 			for(int j = 0; j < Math.min(5, count); j++)
 			{
 				Material craft = player.getUniqueCrafts().get((count > 5 ? j + t : j) % count);
-				ItemStack item = new ItemBuilder(craft).addLore("§7§l> §7Voir le craft").build();
+				ItemStack item = new ItemBuilder(craft).addLore("<gray><bold>> <gray>Voir le craft").build();
 				
 				for(Inventory inv : menus.values()) {
 					inv.setItem(i + 9 * (j + 1), item);

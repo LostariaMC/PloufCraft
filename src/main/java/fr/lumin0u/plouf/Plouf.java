@@ -116,18 +116,18 @@ public final class Plouf extends JavaPlugin
 						.setDisplayName(I18n.interpretable("host_parameter_item_delay"))
 						.addLore(List.of(
 								" ",
-								"§7" + I18n.interpretable("host_parameter_item_delay_description"),
+								"<gray>" + I18n.interpretable("host_parameter_item_delay_description"),
 								" ",
 								I18n.interpretable("host_parameter_item_delay_value")))
 						.build(),
 				List.of(1f, 0.5f, 0.25f), false, false));
 
-		/*game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
+		game.addParameter(new Parameter(PLOUF_WOOD_DEACTIVATED, "", List.of("Désactivé", "Activé"),
 						new ItemBuilder(Material.OAK_LOG)
 								.setDisplayName(I18n.interpretable("host_parameter_no_wood"))
 								.addLore(List.of(
 										" ",
-										"§7" + I18n.interpretable("host_parameter_no_wood_description"),
+										"<gray>" + I18n.interpretable("host_parameter_no_wood_description"),
 										" ",
 										I18n.interpretable("host_parameter_no_wood_value")))
 								.build(),
@@ -138,12 +138,12 @@ public final class Plouf extends JavaPlugin
 						.setDisplayName(I18n.interpretable("host_parameter_remove_non_ingredients"))
 						.addLore(List.of(
 								" ",
-								"§7" + I18n.interpretable("host_parameter_remove_non_ingredients_description"),
+								"<gray>" + I18n.interpretable("host_parameter_remove_non_ingredients_description"),
 								" ",
 								I18n.interpretable("host_parameter_remove_non_ingredients_value")))
 						.build(),
-				false, false));*/
-		Parameter maps = new Parameter("Maps", "", 0, 0, 0, new ItemBuilder(Material.PAPER).setDisplayName("§6Cartes").setLore(List.of(" ", "§7Enlève ici les cartes que tu n'aimes pas", "§7pour pouvoir exploser les joueurs et gagner")).build(), List.of(0F), false, true);
+				false, false));
+		Parameter maps = new Parameter("Maps", "", 0, 0, 0, new ItemBuilder(Material.PAPER).setDisplayName("<gold>Cartes").setLore(List.of(" ", "<gray>Enlève ici les cartes que tu n'aimes pas", "<gray>pour pouvoir exploser les joueurs et gagner")).build(), List.of(0F), false, true);
 		game.addParameter(maps);
 
 		API.instance().registerGame(game);
