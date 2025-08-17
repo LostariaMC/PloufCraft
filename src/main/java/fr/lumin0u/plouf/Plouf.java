@@ -10,6 +10,7 @@ import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
 import fr.worsewarn.cosmox.api.statistics.Statistic;
+import fr.worsewarn.cosmox.api.statistics.StatisticDTO;
 import fr.worsewarn.cosmox.api.statistics.UploadRule;
 import fr.worsewarn.cosmox.game.Game;
 import fr.worsewarn.cosmox.game.configuration.parameters.Parameter;
@@ -86,9 +87,9 @@ public final class Plouf extends JavaPlugin
 		//salam aleykoum les petits patissiers
 		game = new Game("PloufCraft", "#ff5050", new fr.worsewarn.cosmox.tools.items.ItemBuilder(Material.CRAFTING_TABLE), List.of(new TeamConfiguration(GameMap.Type.A, List.of())), 2,
 				List.of(
-						new Statistic(PLOUF_ITEMS_CRAFTED, I18n.interpretable("statistics_crafts"), I18n.interpretable("statistics_crafts_desc"), true, true, UploadRule.ADDITION),
-						new Statistic(PLOUF_UNIQUE_ITEMS_CRAFTED, I18n.interpretable("statistics_unique_crafts"), I18n.interpretable("statistics_unique_crafts_desc"), true, true, UploadRule.ADDITION),
-						new Statistic(PLOUF_POINTS, I18n.interpretable("statistics_points"), I18n.interpretable("statistics_points_desc"), true, true, UploadRule.ADDITION)
+						new StatisticDTO(PLOUF_ITEMS_CRAFTED, I18n.interpretable("statistics_crafts"), I18n.interpretable("statistics_crafts_desc"), true, true, UploadRule.ADDITION),
+						new StatisticDTO(PLOUF_UNIQUE_ITEMS_CRAFTED, I18n.interpretable("statistics_unique_crafts"), I18n.interpretable("statistics_unique_crafts_desc"), true, true, UploadRule.ADDITION),
+						new StatisticDTO(PLOUF_POINTS, I18n.interpretable("statistics_points"), I18n.interpretable("statistics_points_desc"), true, true, UploadRule.ADDITION)
 				),
 				List.of(Achievements.CRAFT_FURNACE,
 						Achievements.CRAFT_WORKBENCH,
