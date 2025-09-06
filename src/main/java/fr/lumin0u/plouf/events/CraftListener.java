@@ -3,7 +3,7 @@ package fr.lumin0u.plouf.events;
 import fr.lumin0u.plouf.GameManager;
 import fr.lumin0u.plouf.Plouf;
 import fr.lumin0u.plouf.PloufPlayer;
-import fr.lumin0u.plouf.util.Achievements;
+import fr.lumin0u.plouf.util.PloufAchievement;
 import fr.lumin0u.plouf.util.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -61,16 +61,16 @@ public class CraftListener implements Listener
 						.toArray(ItemStack[]::new));
 				
 				if(crafted == Material.FURNACE) {
-					player.toCosmox().grantAchievement(Achievements.CRAFT_FURNACE.getIdentifier());
+					player.toCosmox().grantAchievement(PloufAchievement.CRAFT_FURNACE.getIdentifier());
 				}
 				if(crafted == Material.CRAFTING_TABLE) {
-					player.toCosmox().grantAchievement(Achievements.CRAFT_WORKBENCH.getIdentifier());
+					player.toCosmox().grantAchievement(PloufAchievement.CRAFT_WORKBENCH.getIdentifier());
 				}
 				if(player.getCraftedItems().containsAll(WOODEN_TOOLS)) {
-					player.toCosmox().grantAchievement(Achievements.TOOL_CRAFTING.getIdentifier());
+					player.toCosmox().grantAchievement(PloufAchievement.TOOL_CRAFTING.getIdentifier());
 				}
 				if(event.getInventory().getMatrix().length == 4) {
-					player.toCosmox().grantAchievement(Achievements.PLAYER_INVENTORY_CRAFTING.getIdentifier());
+					player.toCosmox().grantAchievement(PloufAchievement.PLAYER_INVENTORY_CRAFTING.getIdentifier());
 				}
 				
 				if(!player.didUseWood() && Arrays.stream(event.getInventory().getMatrix()).filter(Objects::nonNull).map(ItemStack::getType).anyMatch(Items::isWood)) {

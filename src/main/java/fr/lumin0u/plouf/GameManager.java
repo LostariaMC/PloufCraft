@@ -1,6 +1,6 @@
 package fr.lumin0u.plouf;
 
-import fr.lumin0u.plouf.util.Achievements;
+import fr.lumin0u.plouf.util.PloufAchievement;
 import fr.lumin0u.plouf.util.I18n;
 import fr.lumin0u.plouf.util.Items;
 import fr.worsewarn.cosmox.API;
@@ -12,7 +12,6 @@ import fr.worsewarn.cosmox.tools.chat.MessageBuilder;
 import fr.worsewarn.cosmox.tools.map.game.GameMap;
 import fr.worsewarn.cosmox.tools.utils.Pair;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
 import net.kyori.adventure.util.Ticks;
@@ -305,19 +304,19 @@ public class GameManager
 					winners.add(player.getUniqueId());
 
 					if(player.getUniqueCrafts().isEmpty()) {
-						player.toCosmox().grantAchievement(Achievements.WIN_NO_UNIQUE.getIdentifier());
+						player.toCosmox().grantAchievement(PloufAchievement.WIN_NO_UNIQUE.getIdentifier());
 					}
 					if(!player.didUseWood() && gaveWood) {
-						player.toCosmox().grantAchievement(Achievements.WIN_NO_WOOD.getIdentifier());
+						player.toCosmox().grantAchievement(PloufAchievement.WIN_NO_WOOD.getIdentifier());
 					}
 					if(player.isPotentialRemontada()) {
-						player.toCosmox().grantAchievement(Achievements.WIN_REMONTADA.getIdentifier());
+						player.toCosmox().grantAchievement(PloufAchievement.WIN_REMONTADA.getIdentifier());
 					}
 				});
 				getNonSpecPlayers().stream().filter(player -> player.getPoints(-1) != maxPoints).forEach(player -> player.toCosmox().addMolecules(2, I18n.interpretable("molecules_consolation_prize")));
 				
 				getNonSpecPlayers().forEach(player -> {
-					player.toCosmox().addMolecules((double) getNonSpecPlayers().size() / 2, I18n.interpretable("molecules_nb_players"));
+					player.toCosmox().addMolecules((double) getNonSpecPlayers().size(), I18n.interpretable("molecules_nb_players"));
 
 					player.toCosmox().addStatistic(Plouf.PLOUF_POINTS, player.getPoints(-1));
 					player.toCosmox().addStatistic(Plouf.PLOUF_ITEMS_CRAFTED, player.getCraftedItems().size());

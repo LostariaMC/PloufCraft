@@ -9,10 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -41,12 +38,14 @@ public class Items
 	public static void buildGiveableItems() {
 		
 		ingredients = Arrays.stream(Material.values())
+                .filter(Material::isItem)
 				.filter(Items::calculateIsIngredient)
 				.collect(ImmutableSet.toImmutableSet());
 		
-		giveableItems = ingredients.stream()
+		giveableItems = ImmutableSet.copyOf(ingredients);
+				/*ingredients.stream()
 				.filter(mat -> !mat.name().matches("\\w+_SMITHING_TEMPLATE"))
-				.collect(ImmutableSet.toImmutableSet());
+				.collect(ImmutableSet.toImmutableSet());*/
 		
 		noWoodGiveableItems = giveableItems.stream().filter(not(Items::isWood)).collect(ImmutableSet.toImmutableSet());
 		
@@ -82,6 +81,9 @@ public class Items
 		for(@NotNull Iterator<Recipe> it = Bukkit.getServer().recipeIterator(); it.hasNext(); )
 		{
 			Recipe recipe = it.next();
+			if(recipe instanceof SmithingRecipe) {
+				continue;
+			}
 			if(recipe instanceof ShapedRecipe shapedRecipe && shapedRecipe.getChoiceMap().values().stream().filter(Objects::nonNull).anyMatch(rc -> rc.test(new ItemStack(material))))
 			{
 				return true;

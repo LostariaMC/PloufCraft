@@ -3,13 +3,9 @@ package fr.lumin0u.plouf;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.lumin0u.plouf.events.CosmoxListener;
-import fr.lumin0u.plouf.util.Achievements;
-import fr.lumin0u.plouf.util.I18n;
-import fr.lumin0u.plouf.util.ItemBuilder;
-import fr.lumin0u.plouf.util.Items;
+import fr.lumin0u.plouf.util.*;
 import fr.worsewarn.cosmox.API;
 import fr.worsewarn.cosmox.api.players.WrappedPlayer;
-import fr.worsewarn.cosmox.api.statistics.Statistic;
 import fr.worsewarn.cosmox.api.statistics.StatisticDTO;
 import fr.worsewarn.cosmox.api.statistics.UploadRule;
 import fr.worsewarn.cosmox.game.Game;
@@ -86,18 +82,8 @@ public final class Plouf extends JavaPlugin
 		});
 		//salam aleykoum les petits patissiers
 		game = new Game("PloufCraft", "#ff5050", new fr.worsewarn.cosmox.tools.items.ItemBuilder(Material.CRAFTING_TABLE), List.of(new TeamConfiguration(GameMap.Type.A, List.of())), 2,
-				List.of(
-						new StatisticDTO(PLOUF_ITEMS_CRAFTED, I18n.interpretable("statistics_crafts"), I18n.interpretable("statistics_crafts_desc"), true, true, UploadRule.ADDITION),
-						new StatisticDTO(PLOUF_UNIQUE_ITEMS_CRAFTED, I18n.interpretable("statistics_unique_crafts"), I18n.interpretable("statistics_unique_crafts_desc"), true, true, UploadRule.ADDITION),
-						new StatisticDTO(PLOUF_POINTS, I18n.interpretable("statistics_points"), I18n.interpretable("statistics_points_desc"), true, true, UploadRule.ADDITION)
-				),
-				List.of(Achievements.CRAFT_FURNACE,
-						Achievements.CRAFT_WORKBENCH,
-						Achievements.PLAYER_INVENTORY_CRAFTING,
-						Achievements.WIN_NO_UNIQUE,
-						Achievements.TOOL_CRAFTING,
-						Achievements.WIN_NO_WOOD,
-						Achievements.WIN_REMONTADA),
+                PloufStatistic.class,
+				PloufAchievement.class,
 				I18n.interpretable("game_description"),
 
 				List.of(new MapTemplate(GameMap.Type.A, List.of(
